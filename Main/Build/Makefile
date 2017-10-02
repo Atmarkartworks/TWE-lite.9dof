@@ -44,11 +44,11 @@ include ../Version.mk
 #   ../Source
 #   ../Common/Source
 #
-APPSRC += Main.c
+APPSRC += Main.cpp
 APPSRC += SMBus.c
-APPSRC += 24XX00.c
-APPSRC += SHT21.c
-APPSRC += BH1715.c
+#APPSRC += 24XX00.c
+#APPSRC += SHT21.c
+#APPSRC += BH1715.c
 APPSRC += Adafruit_BNO055.cpp
 
 
