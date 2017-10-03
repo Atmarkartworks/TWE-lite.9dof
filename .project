@@ -23,4 +23,16 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Main.c</name>
+			<type>1</type>
+			<locationURI>PROJECT_LOC/Main/Source/Main.c</locationURI>
+		</link>
+		<link>
+			<name>rawdata.cpp</name>
+			<type>1</type>
+			<locationURI>PROJECT_LOC/Main/Source/rawdata.cpp</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
