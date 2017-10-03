@@ -44,13 +44,13 @@ include ../Version.mk
 #   ../Source
 #   ../Common/Source
 #
-APPSRC += Main.cpp
+APPSRC += Main.c
 APPSRC += SMBus.c
 #APPSRC += 24XX00.c
 #APPSRC += SHT21.c
 #APPSRC += BH1715.c
 APPSRC += Adafruit_BNO055.cpp
-
+APPSRC += rawdata.cpp
 
 ### Target type
 # アプリケーション(.bin)をビルドするか、ライブラリ(.a)にするか指定します。
