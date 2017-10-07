@@ -3,6 +3,7 @@
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 
+
 #include "rawdata.h"
 
 /* This driver reads raw data from the BNO055
@@ -62,7 +63,7 @@ void setup(void)
     should go here)
 */
 /**************************************************************************/
-void action(void)
+void action(uint8_t* s, uint8_t* g, uint8_t* a, uint8_t* m)
 {
   // Possible vector values can be:
   // - VECTOR_ACCELEROMETER - m/s^2
@@ -107,6 +108,10 @@ void action(void)
 //  Serial.print(accel, DEC);
 //  Serial.print(" Mag=");
 //  Serial.println(mag, DEC);
+  *s = system;
+  *g = gyro;
+  *a = accel;
+  *m = mag;
 
   bno.delay(BNO055_SAMPLERATE_DELAY_MS);
 }

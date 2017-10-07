@@ -34,6 +34,7 @@
 //#include "BH1715.h"
 //#include "SHT21.h"
 
+
 #include "rawdata.h"
 
 /****************************************************************************/
@@ -514,6 +515,14 @@ static void vHandleSerialInput(void)
 
 		switch(i16Char) {
 		case 'b': // BH1715
+			_C {
+			  /* Display calibration status for each sensor. */
+			  uint8_t system, gyro, accel, mag = 0;
+			  action(&system, &gyro, &accel, &mag);
+			  vfPrintf(&sSerStream, LB "Start BH1715 sensing...");
+
+
+
 //			if (!u8KickedSensor) {
 //				bool_t bres = bBH1715startRead();
 //				if (bres) {
@@ -524,6 +533,7 @@ static void vHandleSerialInput(void)
 //					vfPrintf(&sSerStream, LB "BH1715 is not found.");
 //				}
 //			}
+			}
 			break;
 
 		case 's': // SHT21 Temperature
