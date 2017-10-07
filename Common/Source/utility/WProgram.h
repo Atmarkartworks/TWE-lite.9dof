@@ -25,6 +25,10 @@ typedef unsigned char byte;
 #include "AppHardwareApi.h"
 #include "string.h"
 
+#if defined __cplusplus
+extern "C" {
+#endif
+
 #include "utils.h"
 
 #include "sensor_driver.h"
@@ -36,5 +40,10 @@ typedef unsigned char byte;
 
 //#include <jendefs.h>
 extern uint32 u32TickCount_ms; //!< TOCONETのタイムスタンプ @ingroup DUPCHK
+
+
+#if defined __cplusplus
+}
+#endif
 
 #endif

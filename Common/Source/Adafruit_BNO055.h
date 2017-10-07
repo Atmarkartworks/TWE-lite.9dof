@@ -36,6 +36,8 @@
 #include <Adafruit_Sensor.h>
 #include <utility/imumaths.h>
 
+
+
 #define BNO055_ADDRESS_A (0x28)
 #define BNO055_ADDRESS_B (0x29)
 #define BNO055_ID        (0xA0)
@@ -320,7 +322,7 @@ class Adafruit_BNO055 : public Adafruit_Sensor
     int32_t _sensorID;
     adafruit_bno055_opmode_t _mode;
   public:
-    void delay(int p) { vWait( p * 1000); }
+    void delay(int p) { ::vWait( p * 1000); }
 };
 
 #endif
