@@ -3,7 +3,7 @@
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 
-#include "WProgram.h"
+#include "rawdata.h"
 
 /* This driver reads raw data from the BNO055
 
@@ -62,7 +62,7 @@ void setup(void)
     should go here)
 */
 /**************************************************************************/
-void loop(void)
+void action(void)
 {
   // Possible vector values can be:
   // - VECTOR_ACCELEROMETER - m/s^2

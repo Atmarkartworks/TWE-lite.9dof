@@ -34,6 +34,8 @@
 //#include "BH1715.h"
 //#include "SHT21.h"
 
+#include "rawdata.h"
+
 /****************************************************************************/
 /***        ToCoNet Definitions                                           ***/
 /****************************************************************************/
@@ -160,6 +162,8 @@ void cbAppColdStart(bool_t bAfterAhiInit)
 
 		// MAC start
 		ToCoNet_vMacStart();
+
+		setup();
 	}
 }
 
@@ -196,6 +200,8 @@ void cbAppWarmStart(bool_t bAfterAhiInit)
 
 		// MAC start
 		ToCoNet_vMacStart();
+
+		setup();
 	}
 }
 
