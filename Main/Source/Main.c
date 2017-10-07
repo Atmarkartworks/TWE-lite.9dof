@@ -30,9 +30,9 @@
 #include "sprintf.h"
 
 #include "SMBus.h"
-#include "24XX00.h"
-#include "BH1715.h"
-#include "SHT21.h"
+//#include "24XX00.h"
+//#include "BH1715.h"
+//#include "SHT21.h"
 
 /****************************************************************************/
 /***        ToCoNet Definitions                                           ***/
@@ -362,18 +362,18 @@ void cbToCoNet_vHwEvent(uint32 u32DeviceId, uint32 u32ItemBitmap)
 
    			switch(u8KickedSensor) {
    			case KICKED_SENSOR_BH1715:
-   				i16res = i16BH1715readResult();
-				vfPrintf(SPRINTF_Stream, "BH1715 --> %d[lx]" LB, i16res * 5L);
+//   				i16res = i16BH1715readResult();
+//				vfPrintf(SPRINTF_Stream, "BH1715 --> %d[lx]" LB, i16res * 5L);
    				break;
 
    			case KICKED_SENSOR_SHT21_HUMD:
-				i16res = i16SHT21readResult(NULL, NULL);
-				vfPrintf(SPRINTF_Stream, "SHT21 --> %d[%% x 100]" LB, i16res);
+//				i16res = i16SHT21readResult(NULL, NULL);
+//				vfPrintf(SPRINTF_Stream, "SHT21 --> %d[%% x 100]" LB, i16res);
    				break;
 
    			case KICKED_SENSOR_SHT21_TEMP:
-				i16res = i16SHT21readResult(NULL, NULL);
-				vfPrintf(SPRINTF_Stream, "SHT21 --> %d[oC x 100]" LB, i16res);
+//				i16res = i16SHT21readResult(NULL, NULL);
+//				vfPrintf(SPRINTF_Stream, "SHT21 --> %d[oC x 100]" LB, i16res);
    				break;
    			}
    			u8KickedSensor = 0;
@@ -508,75 +508,75 @@ static void vHandleSerialInput(void)
 
 		switch(i16Char) {
 		case 'b': // BH1715
-			if (!u8KickedSensor) {
-				bool_t bres = bBH1715startRead();
-				if (bres) {
-					vfPrintf(&sSerStream, LB "Start BH1715 sensing...");
-					u8KickedSensor = KICKED_SENSOR_BH1715;
-					u32KickedTimeStamp = u32TickCount_ms + 32;
-				} else {
-					vfPrintf(&sSerStream, LB "BH1715 is not found.");
-				}
-			}
+//			if (!u8KickedSensor) {
+//				bool_t bres = bBH1715startRead();
+//				if (bres) {
+//					vfPrintf(&sSerStream, LB "Start BH1715 sensing...");
+//					u8KickedSensor = KICKED_SENSOR_BH1715;
+//					u32KickedTimeStamp = u32TickCount_ms + 32;
+//				} else {
+//					vfPrintf(&sSerStream, LB "BH1715 is not found.");
+//				}
+//			}
 			break;
 
 		case 's': // SHT21 Temperature
-			if (!u8KickedSensor) {
-				bool_t bres = bSHT21startRead(SHT21_TRIG_TEMP);
-				if (bres) {
-					vfPrintf(&sSerStream, LB "Start SHT21 temperature sensing...");
-					u8KickedSensor = KICKED_SENSOR_SHT21_TEMP;
-					u32KickedTimeStamp = u32TickCount_ms + 32;
-				} else {
-					vfPrintf(&sSerStream, LB "SHT21 is not found.");
-				}
-			}
+//			if (!u8KickedSensor) {
+//				bool_t bres = bSHT21startRead(SHT21_TRIG_TEMP);
+//				if (bres) {
+//					vfPrintf(&sSerStream, LB "Start SHT21 temperature sensing...");
+//					u8KickedSensor = KICKED_SENSOR_SHT21_TEMP;
+//					u32KickedTimeStamp = u32TickCount_ms + 32;
+//				} else {
+//					vfPrintf(&sSerStream, LB "SHT21 is not found.");
+//				}
+//			}
 			break;
 
 		case 'h': // SHT21 Humidity
-			if (!u8KickedSensor) {
-				bool_t bres = bSHT21startRead(SHT21_TRIG_HUMID);
-				if (bres) {
-					vfPrintf(&sSerStream, LB "Start SHT21 humidity sensing...");
-					u8KickedSensor = KICKED_SENSOR_SHT21_HUMD;
-					u32KickedTimeStamp = u32TickCount_ms + 32;
-				} else {
-					vfPrintf(&sSerStream, LB "SHT21 is not found.");
-				}
-			}
+//			if (!u8KickedSensor) {
+//				bool_t bres = bSHT21startRead(SHT21_TRIG_HUMID);
+//				if (bres) {
+//					vfPrintf(&sSerStream, LB "Start SHT21 humidity sensing...");
+//					u8KickedSensor = KICKED_SENSOR_SHT21_HUMD;
+//					u32KickedTimeStamp = u32TickCount_ms + 32;
+//				} else {
+//					vfPrintf(&sSerStream, LB "SHT21 is not found.");
+//				}
+//			}
 			break;
 
 		case 'e': // 24AA00
-			_C {
-				#define U8SIZ 8
-				static uint32 u32ct = 0;
-				bool_t bOk;
-				uint8 u8buf[U8SIZ], i, *p;
-
-				vWait(10000);
-
-				for (i = 0; i < U8SIZ; i++) {
-					u8buf[i] = 0xA5;
-				}
-				bOk = b24xx01_Read(0, u8buf, U8SIZ);
-
-				vfPrintf(&sSerStream,  "\n\r24AA01 READ(%d):", bOk);
-
-				for (i = 0; i < U8SIZ; i++) {
-					vfPrintf(&sSerStream,  " %02X", u8buf[i]);
-				}
-
-				p = (uint8*)&(u32ct);
-
-				for (i = 0; i < U8SIZ; i++) {
-					u8buf[i] = p[i % 4];
-				}
-				bOk = b24xx01_Write(0, u8buf, U8SIZ);
-
-				vfPrintf(&sSerStream, "\n\r24AA01 WRITE(%d):", bOk);
-
-				u32ct++;
-			}
+//			_C {
+//				#define U8SIZ 8
+//				static uint32 u32ct = 0;
+//				bool_t bOk;
+//				uint8 u8buf[U8SIZ], i, *p;
+//
+//				vWait(10000);
+//
+//				for (i = 0; i < U8SIZ; i++) {
+//					u8buf[i] = 0xA5;
+//				}
+//				bOk = b24xx01_Read(0, u8buf, U8SIZ);
+//
+//				vfPrintf(&sSerStream,  "\n\r24AA01 READ(%d):", bOk);
+//
+//				for (i = 0; i < U8SIZ; i++) {
+//					vfPrintf(&sSerStream,  " %02X", u8buf[i]);
+//				}
+//
+//				p = (uint8*)&(u32ct);
+//
+//				for (i = 0; i < U8SIZ; i++) {
+//					u8buf[i] = p[i % 4];
+//				}
+//				bOk = b24xx01_Write(0, u8buf, U8SIZ);
+//
+//				vfPrintf(&sSerStream, "\n\r24AA01 WRITE(%d):", bOk);
+//
+//				u32ct++;
+//			}
 			break;
 
 		case '>': case '.':
