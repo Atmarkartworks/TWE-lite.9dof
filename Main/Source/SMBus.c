@@ -58,6 +58,12 @@
 #include <jendefs.h>
 #include <AppHardwareApi.h>
 
+#include <suli.h>
+volatile uint32 timer0_overflow_count = 0;
+volatile uint32 timer0_millis = 0;
+
+
+
 #define SERIAL_DEBUG
 //#undef SERIAL_DEBUG
 #ifdef SERIAL_DEBUG

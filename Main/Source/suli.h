@@ -24,7 +24,7 @@
 #ifndef __SEEED_UNIFIED_LIBRARY_INTERFACE_H__
 #define __SEEED_UNIFIED_LIBRARY_INTERFACE_H__
 
-#include "common.h"
+//#include "common.h"
 
 
 /**
