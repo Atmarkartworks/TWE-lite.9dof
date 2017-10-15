@@ -55,10 +55,11 @@ void setup(void)
   {
     /* There was a problem detecting the BNO055 ... check your connections */
     //Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+	  vfPrintf(&sSerStream, "Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     while(1);
   }
 
-  bno.delay(10);
+  bno.delay(100);
 
   /* Display the current temperature */
   int8_t temp = bno.getTemp();
@@ -66,6 +67,7 @@ void setup(void)
 //  Serial.print(temp);
 //  Serial.println(" C");
 //  Serial.println("");
+  vfPrintf(&sSerStream, "\n\r setup : Temperature %0d %0x", temp, temp);
 
   bno.setExtCrystalUse(true);
 
@@ -93,6 +95,16 @@ void action(uint8_t* s, uint8_t* g, uint8_t* a, uint8_t* m)
 
 	//imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
+	bno.getVector2(Adafruit_BNO055::VECTOR_EULER);
+
+	Adafruit_BNO055::adafruit_bno055_rev_info_t info;
+
+	bno.getRevInfo(&info);
+
+
+
+	vfPrintf(&sSerStream, "\n\rInfo %0x %0x %0x %0x %0x", info.accel_rev, info.mag_rev, info.gyro_rev, info.sw_rev, info.bl_rev);
+
   /* Display the floating point data */
 //  Serial.print("X: ");
 //  Serial.print(euler.x());
@@ -119,6 +131,7 @@ void action(uint8_t* s, uint8_t* g, uint8_t* a, uint8_t* m)
   /* Display calibration status for each sensor. */
   uint8_t system, gyro, accel, mag = 0;
   bno.getCalibration(&system, &gyro, &accel, &mag);
+  vfPrintf(&sSerStream, "\n\raction %0x %0x %0x %0x", system, gyro, accel, mag);
 //  Serial.print("CALIBRATION: Sys=");
 //  Serial.print(system, DEC);
 //  Serial.print(" Gyro=");

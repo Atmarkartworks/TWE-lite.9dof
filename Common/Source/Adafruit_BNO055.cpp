@@ -376,6 +376,65 @@ imu::Vector<3> Adafruit_BNO055::getVector(adafruit_vector_type_t vector_type)
   return xyz;
 }
 
+void Adafruit_BNO055::getVector2(adafruit_vector_type_t vector_type)
+{
+  //imu::Vector<3> xyz;
+  uint8_t buffer[6];
+  memset (buffer, 0, 6);
+
+  int16_t x, y, z;
+  x = y = z = 0;
+
+  /* Read vector data (6 bytes) */
+  readLen((adafruit_bno055_reg_t)vector_type, buffer, 6);
+
+  x = ((int16_t)buffer[0]) | (((int16_t)buffer[1]) << 8);
+  y = ((int16_t)buffer[2]) | (((int16_t)buffer[3]) << 8);
+  z = ((int16_t)buffer[4]) | (((int16_t)buffer[5]) << 8);
+
+  double a, b, c;
+  a = b = c = 0;
+  /* Convert the value to an appropriate range (section 3.6.4) */
+  /* and assign the value to the Vector type */
+  switch(vector_type)
+  {
+    case VECTOR_MAGNETOMETER:
+      /* 1uT = 16 LSB */
+      a = ((double)x)/16.0;
+      b = ((double)y)/16.0;
+      c = ((double)z)/16.0;
+      break;
+    case VECTOR_GYROSCOPE:
+      /* 1dps = 16 LSB */
+      a = ((double)x)/16.0;
+      b = ((double)y)/16.0;
+      c = ((double)z)/16.0;
+      break;
+    case VECTOR_EULER:
+      /* 1 degree = 16 LSB */
+      a = ((double)x)/16.0;
+      b = ((double)y)/16.0;
+      c = ((double)z)/16.0;
+      break;
+    case VECTOR_ACCELEROMETER:
+    case VECTOR_LINEARACCEL:
+    case VECTOR_GRAVITY:
+      /* 1m/s^2 = 100 LSB */
+      a = ((double)x)/100.0;
+      b = ((double)y)/100.0;
+      c = ((double)z)/100.0;
+      break;
+  }
+
+
+  vfPrintf(&sSerStream, "\n\rVector %0x %0x %0x", a, b, c);
+  //return xyz;
+}
+
+
+
+
+
 /**************************************************************************/
 /*!
     @brief  Gets a quaternion reading from the specified source
