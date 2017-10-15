@@ -43,7 +43,7 @@ void setup(void)
     while(1);
   }
 
-  bno.delay(1000);
+  bno.delay(10);
 
   /* Display the current temperature */
   int8_t temp = bno.getTemp();

@@ -103,6 +103,7 @@ int16 i16TransmitPingMessage(uint8 *pMsg);
 static tsAppData sAppData;
 
 PUBLIC tsFILE sSerStream;
+PUBLIC tsFILE sDebugStream;
 tsSerialPortSetup sSerPort;
 
 // Wakeup port
@@ -164,7 +165,7 @@ void cbAppColdStart(bool_t bAfterAhiInit)
 		// MAC start
 		ToCoNet_vMacStart();
 
-		setup();
+		//setup();
 	}
 }
 
@@ -202,7 +203,7 @@ void cbAppWarmStart(bool_t bAfterAhiInit)
 		// MAC start
 		ToCoNet_vMacStart();
 
-		setup();
+		//setup();
 	}
 }
 
@@ -447,6 +448,7 @@ static void vInitHardware(int f_warm_start)
 
 
 	ToCoNet_vDebugInit(&sSerStream);
+	ToCoNet_vDebugInit(&sDebugStream);
 	ToCoNet_vDebugLevel(0);
 
 	/// IOs
@@ -514,12 +516,13 @@ static void vHandleSerialInput(void)
 	    SERIAL_vFlush(sSerStream.u8Device);
 
 		switch(i16Char) {
-		case 'b': // BH1715
+		case 'b': // BNO055
 			_C {
 			  /* Display calibration status for each sensor. */
 			  uint8_t system, gyro, accel, mag = 0;
-			  action(&system, &gyro, &accel, &mag);
-			  vfPrintf(&sSerStream, LB "Start BH1715 sensing...");
+			  setup();
+			  //action(&system, &gyro, &accel, &mag);
+			  vfPrintf(&sSerStream, LB "Start BNO055 sensing...");
 
 
 

@@ -29,6 +29,20 @@
 
 #include "Adafruit_BNO055.h"
 
+#define SERIAL_DEBUG
+//#undef SERIAL_DEBUG
+#ifdef SERIAL_DEBUG
+
+extern "C" {
+
+# include <serial.h>
+# include <fprintf.h>
+extern tsFILE sDebugStream;
+extern tsFILE sSerStream;
+}
+
+#endif
+
 /***************************************************************************
  CONSTRUCTOR
  ***************************************************************************/
@@ -53,6 +67,7 @@ Adafruit_BNO055::Adafruit_BNO055(int32_t sensorID, uint8_t address)
     @brief  Sets up the HW
 */
 /**************************************************************************/
+#if 0
 bool Adafruit_BNO055::begin(adafruit_bno055_opmode_t mode)
 {
   /* Enable I2C */
@@ -118,7 +133,30 @@ bool Adafruit_BNO055::begin(adafruit_bno055_opmode_t mode)
 
   return true;
 }
+#endif
+bool Adafruit_BNO055::begin(adafruit_bno055_opmode_t mode)
+{
+  /* Enable I2C */
+  //Wire.begin();
+  vSMBusInit();
 
+  vfPrintf(&sSerStream, "\n\rbegin ...");
+
+  /* Make sure we have the right device */
+  uint8_t id = read8(BNO055_CHIP_ID_ADDR);
+  if(id != BNO055_ID)
+  {
+    delay(100); // hold on for boot
+    id = read8(BNO055_CHIP_ID_ADDR);
+    if(id != BNO055_ID) {
+      return false;  // still not? ok bail
+      vfPrintf(&sSerStream, "\n\rfalse");
+    }
+  }
+
+
+  return true;
+}
 /**************************************************************************/
 /*!
     @brief  Puts the chip in the specified operating mode
@@ -624,10 +662,15 @@ byte Adafruit_BNO055::read8(adafruit_bno055_reg_t reg )
 {
   uint8 val;
 
-  if (bSMBusRandomRead(_address, reg, 1, &val)) {
+  //if (bSMBusRandomRead(_address, reg, 1, &val)) {
+  if (FALSE != bSMBusSequentialRead(reg, 1, &val)) {
 	  return val;
+
+
   } else {
 	  // error !!
+	  vfPrintf(&sSerStream, "\n\rError: read8 ...");
+
   }
 
 }
