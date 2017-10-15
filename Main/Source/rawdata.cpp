@@ -79,7 +79,7 @@ void setup(void)
 
 	  vSMBusInit();
 
-	  if (bSMBusRandomRead(0x28, 0x00, 1, &val)) {
+	  if (bSMBusRandomRead((0x28 >> 1), 0x00, 1, &val)) {
 		  //return val;
 		  vfPrintf(&sSerStream, "\n\rrawdata : setup : %0x", val);
 
