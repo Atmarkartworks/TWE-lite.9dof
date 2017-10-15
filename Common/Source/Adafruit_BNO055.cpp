@@ -625,7 +625,7 @@ bool Adafruit_BNO055::write8(adafruit_bno055_reg_t reg, byte value)
 
   val = value;
 
-  ret = bSMBusWrite(_address, reg, 1, &val);
+  ret = bSMBusWrite(_sensorID, reg, 1, &val);
 
   return ret;
 }
@@ -663,7 +663,7 @@ byte Adafruit_BNO055::read8(adafruit_bno055_reg_t reg )
   uint8 val;
 
   //if (bSMBusRandomRead(_address, reg, 1, &val)) {
-  if (FALSE != bSMBusSequentialRead(reg, 1, &val)) {
+  if (FALSE != bSMBusRandomRead(_sensorID, reg, 1, &val)) {
 	  return val;
 
 
@@ -709,7 +709,7 @@ bool Adafruit_BNO055::readLen(adafruit_bno055_reg_t reg, byte * buffer, uint8_t 
 bool Adafruit_BNO055::readLen(adafruit_bno055_reg_t reg, byte * buffer, uint8_t len)
 {
 
-	  if (bSMBusRandomRead(_address, reg, len, buffer)) {
+	  if (bSMBusRandomRead(_sensorID, reg, len, buffer)) {
 		  return true;
 	  } else {
 		  // error !!
