@@ -146,7 +146,7 @@ bool Adafruit_BNO055::begin(adafruit_bno055_opmode_t mode)
   uint8_t id = read8(BNO055_CHIP_ID_ADDR);
   if(id != BNO055_ID)
   {
-    delay(100); // hold on for boot
+    //delay(100); // hold on for boot
     id = read8(BNO055_CHIP_ID_ADDR);
     if(id != BNO055_ID) {
       return false;  // still not? ok bail
