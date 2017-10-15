@@ -392,7 +392,7 @@ void Adafruit_BNO055::getVector2(adafruit_vector_type_t vector_type)
   y = ((int16_t)buffer[2]) | (((int16_t)buffer[3]) << 8);
   z = ((int16_t)buffer[4]) | (((int16_t)buffer[5]) << 8);
 
-  vfPrintf(&sSerStream, "\n\rVector raw (%0x %0x %0x)", x, y, z);
+  vfPrintf(&sSerStream, "\n\rVector raw (%0x %x , %0x %0x , %0x %0x)", buffer[1], buffer[0], buffer[3], buffer[2], buffer[5], buffer[4]);
 
   int16_t a, b, c;
   a = b = c = 0;
