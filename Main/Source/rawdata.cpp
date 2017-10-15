@@ -96,6 +96,7 @@ void action(uint8_t* s, uint8_t* g, uint8_t* a, uint8_t* m)
 	//imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
 	bno.getVector2(Adafruit_BNO055::VECTOR_EULER);
+	//bno.getVector2(Adafruit_BNO055::VECTOR_GYROSCOPE);
 
 	Adafruit_BNO055::adafruit_bno055_rev_info_t info;
 

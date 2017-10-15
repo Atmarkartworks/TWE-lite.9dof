@@ -392,7 +392,9 @@ void Adafruit_BNO055::getVector2(adafruit_vector_type_t vector_type)
   y = ((int16_t)buffer[2]) | (((int16_t)buffer[3]) << 8);
   z = ((int16_t)buffer[4]) | (((int16_t)buffer[5]) << 8);
 
-  double a, b, c;
+  vfPrintf(&sSerStream, "\n\rVector raw (%0x %0x %0x)", x, y, z);
+
+  int16_t a, b, c;
   a = b = c = 0;
   /* Convert the value to an appropriate range (section 3.6.4) */
   /* and assign the value to the Vector type */
