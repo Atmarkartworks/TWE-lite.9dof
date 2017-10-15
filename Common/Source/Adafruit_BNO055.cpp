@@ -140,19 +140,19 @@ bool Adafruit_BNO055::begin(adafruit_bno055_opmode_t mode)
   //Wire.begin();
   vSMBusInit();
 
-  vfPrintf(&sSerStream, "\n\rbegin ...");
+  vfPrintf(&sSerStream, "\n\r Adafruit_BNO055::begin ...\n\r");
 
   /* Make sure we have the right device */
   uint8_t id = read8(BNO055_CHIP_ID_ADDR);
-  if(id != BNO055_ID)
-  {
-    //delay(100); // hold on for boot
-    id = read8(BNO055_CHIP_ID_ADDR);
-    if(id != BNO055_ID) {
-      return false;  // still not? ok bail
-      vfPrintf(&sSerStream, "\n\rfalse");
-    }
-  }
+//  if(id != BNO055_ID)
+//  {
+//    //delay(100); // hold on for boot
+//    id = read8(BNO055_CHIP_ID_ADDR);
+//    if(id != BNO055_ID) {
+//      return false;  // still not? ok bail
+//      vfPrintf(&sSerStream, "\n\rfalse");
+//    }
+//  }
 
 
   return true;
@@ -661,15 +661,16 @@ byte Adafruit_BNO055::read8(adafruit_bno055_reg_t reg )
 byte Adafruit_BNO055::read8(adafruit_bno055_reg_t reg )
 {
   uint8 val;
+  bool r = true;
 
   //if (bSMBusRandomRead(_address, reg, 1, &val)) {
-  if (FALSE != bSMBusRandomRead(_sensorID, reg, 1, &val)) {
+  if (r = bSMBusRandomRead(0x28, reg, 1, &val)) {
 	  return val;
 
 
   } else {
 	  // error !!
-	  vfPrintf(&sSerStream, "\n\rError: read8 ...");
+	  vfPrintf(&sSerStream, "\n\rError: read8 : %0x %0x %0x %0x", _sensorID, val, reg, r);
 
   }
 

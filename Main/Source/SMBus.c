@@ -91,7 +91,7 @@ void vSMBusInit(void)
 	//vAHI_SiMasterConfigure(TRUE, FALSE, 47);
 			// 16/[(PreScaler + 1) x 5]MHz
 			//		--> 31:100KHz, 7:400KHz, 47:66Khz
-	vAHI_SiMasterConfigure(TRUE, FALSE, 7);
+	vAHI_SiMasterConfigure(TRUE, FALSE,31);
 
 }
 

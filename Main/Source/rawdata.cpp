@@ -6,6 +6,20 @@
 
 #include "rawdata.h"
 
+
+#define SERIAL_DEBUG
+//#undef SERIAL_DEBUG
+#ifdef SERIAL_DEBUG
+extern "C" {
+
+# include <serial.h>
+# include <fprintf.h>
+extern tsFILE sDebugStream;
+extern tsFILE sSerStream;
+}
+
+#endif
+
 /* This driver reads raw data from the BNO055
 
    Connections
@@ -30,32 +44,63 @@ Adafruit_BNO055 bno = Adafruit_BNO055(BNO055_ADDRESS_A, BNO055_ID);
     Arduino setup function (automatically called at startup)
 */
 /**************************************************************************/
+//void setup(void)
+//{
+//  //Serial.begin(9600);
+//  //Serial.println("Orientation Sensor Raw Data Test"); Serial.println("");
+//
+//  /* Initialise the sensor */
+//  if(!bno.begin())
+//  {
+//    /* There was a problem detecting the BNO055 ... check your connections */
+//    //Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+//    while(1);
+//  }
+//
+//  bno.delay(10);
+//
+//  /* Display the current temperature */
+//  int8_t temp = bno.getTemp();
+////  Serial.print("Current Temperature: ");
+////  Serial.print(temp);
+////  Serial.println(" C");
+////  Serial.println("");
+//
+//  bno.setExtCrystalUse(true);
+//
+//  //Serial.println("Calibration status values: 0=uncalibrated, 3=fully calibrated");
+//}
+
 void setup(void)
 {
   //Serial.begin(9600);
   //Serial.println("Orientation Sensor Raw Data Test"); Serial.println("");
+	  uint8 val;
 
-  /* Initialise the sensor */
-  if(!bno.begin())
-  {
-    /* There was a problem detecting the BNO055 ... check your connections */
-    //Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-    while(1);
-  }
+	  vSMBusInit();
 
-  bno.delay(10);
+	  if (bSMBusRandomRead(0x28, 0x00, 1, &val)) {
+		  //return val;
+		  vfPrintf(&sSerStream, "\n\rrawdata : setup : %0x", val);
 
-  /* Display the current temperature */
-  int8_t temp = bno.getTemp();
-//  Serial.print("Current Temperature: ");
-//  Serial.print(temp);
-//  Serial.println(" C");
-//  Serial.println("");
+	  } else {
+		  // error !!
+		  vfPrintf(&sSerStream, "\n\rrawdata : setup : error");
 
-  bno.setExtCrystalUse(true);
+	  }
 
-  //Serial.println("Calibration status values: 0=uncalibrated, 3=fully calibrated");
-}
+//
+//  /* Initialise the sensor */
+//  if(!bno.begin())
+//  {
+//    /* There was a problem detecting the BNO055 ... check your connections */
+//    //Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+//    while(1);
+//  }
+
+ }
+
+
 
 /**************************************************************************/
 /*
