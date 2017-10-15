@@ -35,8 +35,9 @@
 
 extern "C" {
 
-# include <serial.h>
-# include <fprintf.h>
+#include <serial.h>
+#include <fprintf.h>
+#include <suli.h>
 extern tsFILE sDebugStream;
 extern tsFILE sSerStream;
 }
@@ -56,6 +57,8 @@ Adafruit_BNO055::Adafruit_BNO055(int32_t sensorID, uint8_t address)
 {
   _sensorID = sensorID;
   _address = address;
+
+  vfPrintf(&sSerStream, "\n\rAdafruit_BNO055::constructor : done.");
 }
 
 /***************************************************************************
@@ -67,12 +70,17 @@ Adafruit_BNO055::Adafruit_BNO055(int32_t sensorID, uint8_t address)
     @brief  Sets up the HW
 */
 /**************************************************************************/
-#if 0
+#if 1
 bool Adafruit_BNO055::begin(adafruit_bno055_opmode_t mode)
 {
   /* Enable I2C */
   //Wire.begin();
-  vSMBusInit();
+  //vSMBusInit();
+
+	  _sensorID =  BNO055_ADDRESS_A;
+      _address = BNO055_ID;
+
+	suli_i2c_init(NULL);
 
   // BNO055 clock stretches for 500us or more!
 #ifdef ESP8266
@@ -134,29 +142,29 @@ bool Adafruit_BNO055::begin(adafruit_bno055_opmode_t mode)
   return true;
 }
 #endif
-bool Adafruit_BNO055::begin(adafruit_bno055_opmode_t mode)
-{
-  /* Enable I2C */
-  //Wire.begin();
-  vSMBusInit();
-
-  vfPrintf(&sSerStream, "\n\r Adafruit_BNO055::begin ...\n\r");
-
-  /* Make sure we have the right device */
-  uint8_t id = read8(BNO055_CHIP_ID_ADDR);
-//  if(id != BNO055_ID)
-//  {
-//    //delay(100); // hold on for boot
-//    id = read8(BNO055_CHIP_ID_ADDR);
-//    if(id != BNO055_ID) {
-//      return false;  // still not? ok bail
-//      vfPrintf(&sSerStream, "\n\rfalse");
-//    }
-//  }
-
-
-  return true;
-}
+//bool Adafruit_BNO055::begin(adafruit_bno055_opmode_t mode)
+//{
+//  /* Enable I2C */
+//  //Wire.begin();
+//  vSMBusInit();
+//
+//  vfPrintf(&sSerStream, "\n\r Adafruit_BNO055::begin ...\n\r");
+//
+//  /* Make sure we have the right device */
+//  uint8_t id = read8(BNO055_CHIP_ID_ADDR);
+////  if(id != BNO055_ID)
+////  {
+////    //delay(100); // hold on for boot
+////    id = read8(BNO055_CHIP_ID_ADDR);
+////    if(id != BNO055_ID) {
+////      return false;  // still not? ok bail
+////      vfPrintf(&sSerStream, "\n\rfalse");
+////    }
+////  }
+//
+//
+//  return true;
+//}
 /**************************************************************************/
 /*!
     @brief  Puts the chip in the specified operating mode
@@ -621,11 +629,9 @@ bool Adafruit_BNO055::write8(adafruit_bno055_reg_t reg, byte value)
 bool Adafruit_BNO055::write8(adafruit_bno055_reg_t reg, byte value)
 {
   bool ret;
-  uint8 val;
+  uint8 dta_send[] = {reg, value};
 
-  val = value;
-
-  ret = bSMBusWrite(_sensorID, reg, 1, &val);
+  ret = suli_i2c_write(NULL, _sensorID, dta_send, 2);
 
   return ret;
 }
@@ -660,19 +666,20 @@ byte Adafruit_BNO055::read8(adafruit_bno055_reg_t reg )
 
 byte Adafruit_BNO055::read8(adafruit_bno055_reg_t reg )
 {
-  uint8 val;
-  bool r = true;
-
-  //if (bSMBusRandomRead(_address, reg, 1, &val)) {
-  if (r = bSMBusRandomRead(0x28, reg, 1, &val)) {
-	  return val;
+  uint8 val = 0;
+  uint8 dta_send[] = {reg};
 
 
-  } else {
-	  // error !!
-	  vfPrintf(&sSerStream, "\n\rError: read8 : %0x %0x %0x %0x", _sensorID, val, reg, r);
+  suli_i2c_write(NULL, _sensorID, dta_send, 1);
+  suli_i2c_read(NULL, _sensorID, &val, 1);
 
-  }
+  //vfPrintf(&sSerStream, "\n\rAdafruit_BNO055::read8 : %0x %0x %0x", val, _sensorID, dta_send[0]);
+  //vfPrintf(&sSerStream, ":%0x", val);
+
+
+
+  return val;
+
 
 }
 
@@ -710,11 +717,19 @@ bool Adafruit_BNO055::readLen(adafruit_bno055_reg_t reg, byte * buffer, uint8_t 
 bool Adafruit_BNO055::readLen(adafruit_bno055_reg_t reg, byte * buffer, uint8_t len)
 {
 
-	  if (bSMBusRandomRead(_sensorID, reg, len, buffer)) {
-		  return true;
-	  } else {
-		  // error !!
-		  return false;
-	  }
+//	  if (bSMBusRandomRead(_sensorID, reg, len, buffer)) {
+//		  return true;
+//	  } else {
+//		  // error !!
+//		  return false;
+//	  }
+	  bool ret = false;
+	  uint8 dta_send[] = {reg};
+
+
+	  ret = suli_i2c_write(NULL, _sensorID, dta_send, 1);
+	  ret = suli_i2c_read(NULL, _sensorID, buffer, len);
+
+	  return ret;
 
 }

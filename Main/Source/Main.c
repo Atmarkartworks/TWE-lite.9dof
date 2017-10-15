@@ -521,8 +521,9 @@ static void vHandleSerialInput(void)
 			  /* Display calibration status for each sensor. */
 			  uint8_t system, gyro, accel, mag = 0;
 			  setup();
-			  //action(&system, &gyro, &accel, &mag);
 			  vfPrintf(&sSerStream, LB "Start BNO055 sensing...");
+			  action(&system, &gyro, &accel, &mag);
+				vfPrintf(&sSerStream, "\n\r%0x %0x %0x %0x", system, gyro, accel, mag);
 
 
 

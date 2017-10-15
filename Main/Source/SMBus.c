@@ -108,7 +108,7 @@ void vSMBusInit(void)
 	//vAHI_SiMasterConfigure(TRUE, FALSE, 47);
 			// 16/[(PreScaler + 1) x 5]MHz
 			//		--> 31:100KHz, 7:400KHz, 47:66Khz
-	vAHI_SiMasterConfigure(TRUE, FALSE, 31);
+	vAHI_SiMasterConfigure(TRUE, FALSE, 7);
 
 	//vAHI_SiSetLocation(TRUE);
 	vfPrintf(&sSerStream, "%d %d ", bAHI_SiMasterPollArbitrationLost(),bAHI_SiMasterCheckRxNack());
@@ -451,8 +451,8 @@ void suli_i2c_init(void * i2c_device)
     vAHI_SiMasterConfigure(
         TRUE,  //bPulseSuppressionEnable,
         FALSE, //bInterruptEnable,
-        31);   //uint8 u8PreScaler);  //16M/((scale+1)*5) = 100k
-    vAHI_SiSetLocation(TRUE);  //D16,D17 as i2c
+        7);   //uint8 u8PreScaler);  //16M/((scale+1)*5) = 100k
+    //vAHI_SiSetLocation(TRUE);  //D16,D17 as i2c
 }
 
 
