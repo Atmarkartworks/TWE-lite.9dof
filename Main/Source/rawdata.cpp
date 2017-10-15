@@ -12,8 +12,9 @@
 #ifdef SERIAL_DEBUG
 extern "C" {
 
-# include <serial.h>
-# include <fprintf.h>
+#include <serial.h>
+#include <fprintf.h>
+#include <suli.h>
 extern tsFILE sDebugStream;
 extern tsFILE sSerStream;
 }
@@ -79,15 +80,24 @@ void setup(void)
 
 	  vSMBusInit();
 
-	  if (bSMBusRandomRead((0x28 >> 1), 0x00, 1, &val)) {
-		  //return val;
-		  vfPrintf(&sSerStream, "\n\rrawdata : setup : %0x", val);
+//	  if (bSMBusRandomRead((0x28 >> 1), 0x00, 1, &val)) {
+//		  //return val;
+//		  vfPrintf(&sSerStream, "\n\rrawdata : setup : %0x", val);
+//
+//	  } else {
+//		  // error !!
+//		  vfPrintf(&sSerStream, "\n\rrawdata : setup : error");
+//
+//	  }
 
-	  } else {
-		  // error !!
-		  vfPrintf(&sSerStream, "\n\rrawdata : setup : error");
 
-	  }
+	    uint8 dta_send[] = {0x00};
+
+	    suli_i2c_write(NULL, BNO055_ADDRESS_A, dta_send, 1);
+	    suli_i2c_read(NULL, BNO055_ADDRESS_A, &val, 1);
+
+	    vfPrintf(&sSerStream, "\n\rrawdata : setup : %0x", val);
+
 
 //
 //  /* Initialise the sensor */
