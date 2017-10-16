@@ -165,7 +165,7 @@ void cbAppColdStart(bool_t bAfterAhiInit)
 		// MAC start
 		ToCoNet_vMacStart();
 
-		//setup();
+		setup();
 	}
 }
 
@@ -203,7 +203,7 @@ void cbAppWarmStart(bool_t bAfterAhiInit)
 		// MAC start
 		ToCoNet_vMacStart();
 
-		//setup();
+		setup();
 	}
 }
 
@@ -520,7 +520,7 @@ static void vHandleSerialInput(void)
 			_C {
 			  /* Display calibration status for each sensor. */
 			  uint8_t system, gyro, accel, mag = 0;
-			  setup();
+
 			  vfPrintf(&sSerStream, LB "Start BNO055 sensing...");
 			  action(&system, &gyro, &accel, &mag);
 				vfPrintf(&sSerStream, "\n\r%0x %0x %0x %0x", system, gyro, accel, mag);
@@ -551,6 +551,8 @@ static void vHandleSerialInput(void)
 //					vfPrintf(&sSerStream, LB "SHT21 is not found.");
 //				}
 //			}
+			setup();
+			vfPrintf(&sSerStream, LB "setup()");
 			break;
 
 		case 'h': // SHT21 Humidity
@@ -564,6 +566,7 @@ static void vHandleSerialInput(void)
 //					vfPrintf(&sSerStream, LB "SHT21 is not found.");
 //				}
 //			}
+			init();
 			break;
 
 		case 'e': // 24AA00

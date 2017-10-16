@@ -75,6 +75,10 @@ void setup(void)
 }
 
 
+void init(void)
+{
+if(bno.init()) vfPrintf(&sSerStream, "\n\rinit ... ok");
+}
 
 
 /**************************************************************************/
@@ -93,6 +97,9 @@ void action(uint8_t* s, uint8_t* g, uint8_t* a, uint8_t* m)
   // - VECTOR_LINEARACCEL   - m/s^2
   // - VECTOR_GRAVITY       - m/s^2
 
+
+
+
 	//imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
 	bno.getVector2(Adafruit_BNO055::VECTOR_EULER);
@@ -105,6 +112,8 @@ void action(uint8_t* s, uint8_t* g, uint8_t* a, uint8_t* m)
 
 
 	vfPrintf(&sSerStream, "\n\rInfo %0x %0x %0x %0x %0x", info.accel_rev, info.mag_rev, info.gyro_rev, info.sw_rev, info.bl_rev);
+	byte d = bno.getVector3();
+	vfPrintf(&sSerStream, "\n\rVector3 %0x", d);
 
   /* Display the floating point data */
 //  Serial.print("X: ");

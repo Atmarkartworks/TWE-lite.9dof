@@ -142,29 +142,39 @@ bool Adafruit_BNO055::begin(adafruit_bno055_opmode_t mode)
   return true;
 }
 #endif
-//bool Adafruit_BNO055::begin(adafruit_bno055_opmode_t mode)
-//{
-//  /* Enable I2C */
-//  //Wire.begin();
-//  vSMBusInit();
-//
-//  vfPrintf(&sSerStream, "\n\r Adafruit_BNO055::begin ...\n\r");
-//
-//  /* Make sure we have the right device */
-//  uint8_t id = read8(BNO055_CHIP_ID_ADDR);
-////  if(id != BNO055_ID)
-////  {
-////    //delay(100); // hold on for boot
-////    id = read8(BNO055_CHIP_ID_ADDR);
-////    if(id != BNO055_ID) {
-////      return false;  // still not? ok bail
-////      vfPrintf(&sSerStream, "\n\rfalse");
-////    }
-////  }
-//
-//
-//  return true;
-//}
+
+bool Adafruit_BNO055::init(adafruit_bno055_opmode_t mode)
+{
+
+	write8((adafruit_bno055_reg_t)0x3d, 0x00);
+	delay(100);
+	write8((adafruit_bno055_reg_t)0x3f, 0x81);
+	delay(100);
+	write8((adafruit_bno055_reg_t)0x41, 0x21);
+	delay(100);
+	write8((adafruit_bno055_reg_t)0x42, 0x02);
+	delay(100);
+	write8((adafruit_bno055_reg_t)0x3b, 0x00);
+	delay(100);
+	write8((adafruit_bno055_reg_t)0x3d, 0x0c);
+	delay(100);
+
+
+  vfPrintf(&sSerStream, "\n\r Adafruit_BNO055::init ...\n\r");
+
+  /* Make sure we have the right device */
+  uint8_t id = read8(BNO055_CHIP_ID_ADDR);
+  if(id != BNO055_ID)
+  {
+    delay(10); // hold on for boot
+    id = read8(BNO055_CHIP_ID_ADDR);
+    if(id != BNO055_ID) {
+      return false;  // still not? ok bail
+    }
+  }
+
+  return true;
+}
 /**************************************************************************/
 /*!
     @brief  Puts the chip in the specified operating mode
@@ -429,13 +439,14 @@ void Adafruit_BNO055::getVector2(adafruit_vector_type_t vector_type)
   }
 
 
-  vfPrintf(&sSerStream, "\n\rVector %0x %0x %0x", a, b, c);
+  vfPrintf(&sSerStream, "\n\rVector %0d %0d %0d", a, b, c);
   //return xyz;
 }
 
-
-
-
+byte Adafruit_BNO055::getVector3(void)
+{
+   return read8(BNO055_EULER_H_LSB_ADDR);
+}
 
 /**************************************************************************/
 /*!
