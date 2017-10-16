@@ -184,6 +184,7 @@ void Adafruit_BNO055::setMode(adafruit_bno055_opmode_t mode)
 {
   _mode = mode;
   write8(BNO055_OPR_MODE_ADDR, _mode);
+  vfPrintf(&sSerStream, "\n\r Adafruit_BNO055::setMode ...%0x", _mode);
   delay(30);
 }
 
@@ -704,6 +705,7 @@ bool Adafruit_BNO055::write8(adafruit_bno055_reg_t reg, byte value)
   uint8 dta_send[] = {reg, value};
 
   ret = suli_i2c_write(NULL, _sensorID, dta_send, 2);
+  vfPrintf(&sSerStream, "\n\rwrite8 : (%02X %02X)", reg, value);
 
   return ret;
 }
