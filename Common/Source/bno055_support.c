@@ -52,6 +52,8 @@
 /*---------------------------------------------------------------------------*
  Includes
 *---------------------------------------------------------------------------*/
+
+#define BNO055_API
 #include "bno055.h"
 
 #if ARDUINO >= 100
@@ -534,9 +536,10 @@ s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 	s32 BNO055_iERROR = BNO055_INIT_VALUE;
 	u8 array[I2C_BUFFER_LEN];
 	u8 stringpos = BNO055_INIT_VALUE;
+	bool ret;
 
 	array[BNO055_INIT_VALUE] = reg_addr;
-	for (stringpos = BNO055_INIT_VALUE; stringpos < cnt; stringpos++)
+	for (stringpos = BNO055_INIT_VALUE; stringpos < cnt; stringpos++) {
 		array[stringpos + BNO055_I2C_BUS_WRITE_ARRAY_INDEX] =
 			*(reg_data + stringpos);
 	}
@@ -559,7 +562,7 @@ s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 //	return (s8)BNO055_iERROR;
 
 
-	  ret = suli_i2c_write(NULL, dev_addr, array, cnt+1);
+	  ret = suli_i2c_write(NULL, (uint8)dev_addr, (uint8 *)array, cnt+1);
 	  //vfPrintf(&sSerStream, "\n\rwrite8 : (%02X %02X)", reg, value);
 
 	  return (s8)ret;
@@ -576,25 +579,39 @@ s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
  */
 s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 {
-	s32 BNO055_iERROR = BNO055_INIT_VALUE;
-	u8 array[I2C_BUFFER_LEN] = {BNO055_INIT_VALUE};
-	u8 stringpos = BNO055_INIT_VALUE;
+//	s32 BNO055_iERROR = BNO055_INIT_VALUE;
+//	u8 array[I2C_BUFFER_LEN] = {BNO055_INIT_VALUE};
+//	u8 stringpos = BNO055_INIT_VALUE;
+//
+//	array[BNO055_INIT_VALUE] = reg_addr;
+//
+//	/* Please take the below API as your reference
+//	 * for read the data using I2C communication
+//	 * add your I2C read API here.
+//	 * "BNO055_iERROR = I2C_WRITE_READ_STRING(DEV_ADDR,
+//	 * ARRAY, ARRAY, 1, CNT)"
+//	 * BNO055_iERROR is an return value of SPI write API
+//	 * Please select your valid return value
+//     * In the driver BNO055_SUCCESS defined as 0
+//     * and FAILURE defined as -1
+//	 */
+//	for (stringpos = BNO055_INIT_VALUE; stringpos < cnt; stringpos++)
+//		*(reg_data + stringpos) = array[stringpos];
+//	return (s8)BNO055_iERROR;
 
-	array[BNO055_INIT_VALUE] = reg_addr;
 
-	/* Please take the below API as your reference
-	 * for read the data using I2C communication
-	 * add your I2C read API here.
-	 * "BNO055_iERROR = I2C_WRITE_READ_STRING(DEV_ADDR,
-	 * ARRAY, ARRAY, 1, CNT)"
-	 * BNO055_iERROR is an return value of SPI write API
-	 * Please select your valid return value
-     * In the driver BNO055_SUCCESS defined as 0
-     * and FAILURE defined as -1
-	 */
-	for (stringpos = BNO055_INIT_VALUE; stringpos < cnt; stringpos++)
-		*(reg_data + stringpos) = array[stringpos];
-	return (s8)BNO055_iERROR;
+
+
+
+	  bool ret = 0;
+	  uint8 dta_send[] = {reg_addr};
+
+
+	  ret = suli_i2c_write(NULL, dev_addr, dta_send, 1);
+	  ret = suli_i2c_read(NULL, dev_addr, reg_data, cnt);
+
+	  return (s8)ret;
+
 }
 /*	Brief : The delay routine
  *	\param : delay in ms
@@ -602,6 +619,7 @@ s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 void BNO055_delay_msek(u32 msek)
 {
 	/*Here you can write your own delay routine*/
+	vWait(msek);
 }
 
 #endif
