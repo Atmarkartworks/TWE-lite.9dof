@@ -58,10 +58,11 @@
 
 
 extern "C" {
-#include <utility/BNO055.h>
+#include <BNO055.h>
 }
-#include <Wire.h>
-#include "Arduino.h"
+
+#include <WProgram.h>
+//#include "Arduino.h"
 
 typedef enum{
 		X_AXIS = 0,

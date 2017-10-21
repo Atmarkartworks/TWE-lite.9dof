@@ -51,6 +51,29 @@
 * No license is granted by implication or otherwise under any patent or
 * patent rights of the copyright holder.
 */
+
+//#include <math.h>
+
+#include <limits.h>
+//#include <stdint.h>
+
+
+//#define SERIAL_DEBUG
+////#undef SERIAL_DEBUG
+//#ifdef SERIAL_DEBUG
+//
+//extern "C" {
+//
+//#include <serial.h>
+//#include <fprintf.h>
+//#include <suli.h>
+//extern tsFILE sDebugStream;
+//extern tsFILE sSerStream;
+//}
+//
+//#endif
+
+
 #include "NineAxesMotion.h"
 //Function Definitions
 /*******************************************************************************************
