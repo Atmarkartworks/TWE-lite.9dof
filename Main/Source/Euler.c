@@ -69,26 +69,26 @@ void setup() //This code is executed once
 	BNO055_I2C_routine();
 
 
-	//Set the I2C address here !!! ADDR1 is the default address
-	//myBNO.dev_addr = BNO055_I2C_ADDR1;
-	myBNO.dev_addr = address;
-	//myBNO.dev_addr = BNO055_I2C_ADDR2;
-
-	//Initialize the BNO055 structure to hold the device information
-	bno055_init(&myBNO);
-
-	//Post initialization delay
-	delay(POST_INIT_PERIOD);
-
-	//To set the output data format to the Android style
-	bno055_set_data_output_format(ANDROID);
-
-	//Set the default data update mode to auto
-	dataUpdateMode = AUTO;
-
-
-
-
+//	//Set the I2C address here !!! ADDR1 is the default address
+//	//myBNO.dev_addr = BNO055_I2C_ADDR1;
+//	myBNO.dev_addr = address;
+//	//myBNO.dev_addr = BNO055_I2C_ADDR2;
+//
+//	//Initialize the BNO055 structure to hold the device information
+//	bno055_init(&myBNO);
+//
+//	//Post initialization delay
+//	delay(POST_INIT_PERIOD);
+//
+//	//To set the output data format to the Android style
+//	bno055_set_data_output_format(ANDROID);
+//
+//	//Set the default data update mode to auto
+//	dataUpdateMode = AUTO;
+//
+//
+//
+//
 
 
 
@@ -103,7 +103,11 @@ void setup() //This code is executed once
   //Setting to MANUAL requires fewer reads to the sensor
 
 
+	suli_i2c_init(NULL);
 
+ if (imu_init()) {
+
+ }
 
 
 
