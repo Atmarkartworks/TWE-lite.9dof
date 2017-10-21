@@ -727,6 +727,7 @@ s16 sic_8;/**< soft iron calibration matrix 8 data */
 /***************************************************/
 /**\name	CONSTANT DEFINITIONS                   */
 /***************************************************/
+#define         BNO055_ZERO_U8X           ((u8)0)
 #define  BNO055_INIT_VALUE						((u8)0)
 #define  BNO055_GEN_READ_WRITE_LENGTH			((u8)1)
 #define  BNO055_LSB_MSB_READ_LENGTH				((u8)2)

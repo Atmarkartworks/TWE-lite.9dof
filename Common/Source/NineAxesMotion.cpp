@@ -1017,7 +1017,7 @@ signed char BNO055_I2C_bus_write(unsigned char dev_addr,unsigned char reg_addr, 
 	return comres;
 }
 
-void _delay(u_32 period)
+void _delay(u32 period)
 {
 	delay(period);
 }

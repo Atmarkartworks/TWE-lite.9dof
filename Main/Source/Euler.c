@@ -93,17 +93,17 @@ void setup() //This code is executed once
 
 
 
-  //Peripheral Initialization
-  Serial.begin(115200);           //Initialize the Serial Port to view information on the Serial Monitor
-  I2C.begin();                    //Initialize I2C communication to the let the library communicate with the sensor.
-  //Sensor Initialization
-  mySensor.initSensor();          //The I2C Address can be changed here inside this function in the library
-  mySensor.setOperationMode(OPERATION_MODE_NDOF);   //Can be configured to other operation modes as desired
-  mySensor.setUpdateMode(MANUAL);	//The default is AUTO. Changing to MANUAL requires calling the relevant update functions prior to calling the read functions
-  //Setting to MANUAL requires fewer reads to the sensor
+//  //Peripheral Initialization
+//  Serial.begin(115200);           //Initialize the Serial Port to view information on the Serial Monitor
+//  I2C.begin();                    //Initialize I2C communication to the let the library communicate with the sensor.
+//  //Sensor Initialization
+//  mySensor.initSensor();          //The I2C Address can be changed here inside this function in the library
+//  mySensor.setOperationMode(OPERATION_MODE_NDOF);   //Can be configured to other operation modes as desired
+//  mySensor.setUpdateMode(MANUAL);	//The default is AUTO. Changing to MANUAL requires calling the relevant update functions prior to calling the read functions
+//  //Setting to MANUAL requires fewer reads to the sensor
 
 
-	suli_i2c_init(NULL);
+//	suli_i2c_init(NULL);
 
  if (imu_init()) {
 
@@ -115,40 +115,40 @@ void setup() //This code is executed once
 
 void loop() //This code is looped forever
 {
-  if ((millis() - lastStreamTime) >= streamPeriod)
-  {
-    lastStreamTime = millis();
-    mySensor.updateEuler();        //Update the Euler data into the structure of the object
-    mySensor.updateCalibStatus();  //Update the Calibration Status
-
-    Serial.print("Time: ");
-    Serial.print(lastStreamTime);
-    Serial.print("ms ");
-
-    Serial.print(" H: ");
-    Serial.print(mySensor.readEulerHeading()); //Heading data
-    Serial.print("deg ");
-
-    Serial.print(" R: ");
-    Serial.print(mySensor.readEulerRoll()); //Roll data
-    Serial.print("deg");
-
-    Serial.print(" P: ");
-    Serial.print(mySensor.readEulerPitch()); //Pitch data
-    Serial.print("deg ");
-
-    Serial.print(" A: ");
-    Serial.print(mySensor.readAccelCalibStatus());  //Accelerometer Calibration Status (0 - 3)
-
-    Serial.print(" M: ");
-    Serial.print(mySensor.readMagCalibStatus());    //Magnetometer Calibration Status (0 - 3)
-
-    Serial.print(" G: ");
-    Serial.print(mySensor.readGyroCalibStatus());   //Gyroscope Calibration Status (0 - 3)
-
-    Serial.print(" S: ");
-    Serial.print(mySensor.readSystemCalibStatus());   //System Calibration Status (0 - 3)
-
-    Serial.println();
-  }
+//  if ((millis() - lastStreamTime) >= streamPeriod)
+//  {
+//    lastStreamTime = millis();
+//    mySensor.updateEuler();        //Update the Euler data into the structure of the object
+//    mySensor.updateCalibStatus();  //Update the Calibration Status
+//
+//    Serial.print("Time: ");
+//    Serial.print(lastStreamTime);
+//    Serial.print("ms ");
+//
+//    Serial.print(" H: ");
+//    Serial.print(mySensor.readEulerHeading()); //Heading data
+//    Serial.print("deg ");
+//
+//    Serial.print(" R: ");
+//    Serial.print(mySensor.readEulerRoll()); //Roll data
+//    Serial.print("deg");
+//
+//    Serial.print(" P: ");
+//    Serial.print(mySensor.readEulerPitch()); //Pitch data
+//    Serial.print("deg ");
+//
+//    Serial.print(" A: ");
+//    Serial.print(mySensor.readAccelCalibStatus());  //Accelerometer Calibration Status (0 - 3)
+//
+//    Serial.print(" M: ");
+//    Serial.print(mySensor.readMagCalibStatus());    //Magnetometer Calibration Status (0 - 3)
+//
+//    Serial.print(" G: ");
+//    Serial.print(mySensor.readGyroCalibStatus());   //Gyroscope Calibration Status (0 - 3)
+//
+//    Serial.print(" S: ");
+//    Serial.print(mySensor.readSystemCalibStatus());   //System Calibration Status (0 - 3)
+//
+//    Serial.println();
+//  }
 }
