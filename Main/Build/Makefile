@@ -53,6 +53,7 @@ APPSRC += SMBus.c
 #APPSRC += rawdata.cpp
 APPSRC += bno055.c
 APPSRC += bno055_support.c
+APPSRC += Euler.c
 
 ### Target type
 # アプリケーション(.bin)をビルドするか、ライブラリ(.a)にするか指定します。
