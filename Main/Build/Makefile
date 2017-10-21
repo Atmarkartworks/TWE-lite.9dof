@@ -53,7 +53,7 @@ APPSRC += SMBus.c
 #APPSRC += rawdata.cpp
 APPSRC += bno055.c
 APPSRC += bno055_support2.c
-APPSRC += NineAxesMoton.cpp
+APPSRC += NineAxesMotion.cpp
 APPSRC += Euler.cpp
 
 ### Target type
