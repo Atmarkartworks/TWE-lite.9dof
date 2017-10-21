@@ -49,8 +49,10 @@ APPSRC += SMBus.c
 #APPSRC += 24XX00.c
 #APPSRC += SHT21.c
 #APPSRC += BH1715.c
-APPSRC += Adafruit_BNO055.cpp
-APPSRC += rawdata.cpp
+#APPSRC += Adafruit_BNO055.cpp
+#APPSRC += rawdata.cpp
+APPSRC += bno055.c
+APPSRC += bno055_support.c
 
 ### Target type
 # アプリケーション(.bin)をビルドするか、ライブラリ(.a)にするか指定します。

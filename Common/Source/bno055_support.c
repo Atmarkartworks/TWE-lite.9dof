@@ -54,6 +54,25 @@
 *---------------------------------------------------------------------------*/
 #include "bno055.h"
 
+#if ARDUINO >= 100
+ #include "Arduino.h"
+#else
+ #include "WProgram.h"
+#endif
+
+//#include <math.h>
+#include <limits.h>
+#define SERIAL_DEBUG
+//#undef SERIAL_DEBUG
+#ifdef SERIAL_DEBUG
+
+#include <serial.h>
+#include <fprintf.h>
+#include <suli.h>
+extern tsFILE sDebugStream;
+extern tsFILE sSerStream;
+
+#endif
 /*----------------------------------------------------------------------------*
  *  The following APIs are used for reading and writing of
  *	sensor data using I2C communication
@@ -537,7 +556,13 @@ s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
 	* in the I2C write string function
 	* For more information please refer data sheet SPI communication:
 	*/
-	return (s8)BNO055_iERROR;
+//	return (s8)BNO055_iERROR;
+
+
+	  ret = suli_i2c_write(NULL, dev_addr, array, cnt+1);
+	  //vfPrintf(&sSerStream, "\n\rwrite8 : (%02X %02X)", reg, value);
+
+	  return (s8)ret;
 }
 
  /*	\Brief: The API is used as I2C bus read

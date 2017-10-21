@@ -9,7 +9,7 @@
   * type define for arduino
   */
 
-typedef bool boolean;
+//typedef bool boolean;
 typedef unsigned char byte;
 
 /*
