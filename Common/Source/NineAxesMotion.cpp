@@ -1013,16 +1013,17 @@ signed char BNO055_I2C_bus_read(unsigned char dev_addr,unsigned char reg_addr, u
 	  uint8 dta_send[] = {reg_addr};
 
 
-	  ret = suli_i2c_write(NULL, dev_addr, dta_send, 1);
-	  ret = suli_i2c_read(NULL, dev_addr, reg_data, cnt);
+	  comres = suli_i2c_write(NULL, dev_addr, dta_send, 1);
+	  comres = suli_i2c_read(NULL, dev_addr, reg_data, cnt);
 
 	  return comres;
 }
 
+#define	BNO055_I2C_BUS_WRITE_ARRAY_INDEX	((u8)1)
 
 signed char BNO055_I2C_bus_write(unsigned char dev_addr,unsigned char reg_addr, unsigned char *reg_data, unsigned char cnt)
 {
-//	BNO055_RETURN_FUNCTION_TYPE comres = BNO055_ZERO_U8X;
+	BNO055_RETURN_FUNCTION_TYPE comres = BNO055_ZERO_U8X;
 //	I2C.beginTransmission(dev_addr);	//Start of transmission
 //	I2C.write(reg_addr);				//Desired start register
 //	for(unsigned char index = 0; index < cnt; index++) //Note that the BNO055 supports burst write
@@ -1033,6 +1034,23 @@ signed char BNO055_I2C_bus_write(unsigned char dev_addr,unsigned char reg_addr, 
 //	comres = I2C.endTransmission();		//Stop of transmission
 //	delayMicroseconds(150);				//Caution Delay
 //	return comres;
+ 	s32 BNO055_iERROR = BNO055_INIT_VALUE;
+ 	u8 array[8];
+ 	u8 stringpos = BNO055_INIT_VALUE;
+ 	bool ret;
+
+ 	array[BNO055_INIT_VALUE] = reg_addr;
+ 	for (stringpos = BNO055_INIT_VALUE; stringpos < cnt; stringpos++) {
+ 		array[stringpos + BNO055_I2C_BUS_WRITE_ARRAY_INDEX] =
+ 			*(reg_data + stringpos);
+ 	}
+
+	  comres = suli_i2c_write(NULL, (uint8)dev_addr, (uint8 *)array, cnt+1);
+	  //vfPrintf(&sSerStream, "\n\rwrite8 : (%02X %02X)", reg, value);
+
+	  return comres;
+
+
 }
 
 void _delay(u32 period)
