@@ -46,8 +46,9 @@
 */
 
 #include "bno055.h"        //Contains the bridge code between the API and the Arduino Environment
+#include "bno055_support.h"
 
-struct bno055_t myBNO;
+//struct bno055_t myBNO;
 
 unsigned long lastStreamTime = 0;     //To store the last streamed time stamp
 const int streamPeriod = 20;          //To stream at 50Hz without using additional timers (time period(ms) =1000/frequency(Hz))
@@ -62,9 +63,11 @@ void setup() //This code is executed once
 //	delay(INIT_PERIOD);					//Pause for a while to let the sensor initialize completely (Anything >500ms should be fine)
 	//Initialization sequence
 	//Link the function pointers for communication (late-binding)
-	myBNO.bus_read = BNO055_I2C_bus_read;
-	myBNO.bus_write = BNO055_I2C_bus_write;
-	myBNO.delay_msec = _delay;
+//	myBNO.bus_read = BNO055_I2C_bus_read;
+//	myBNO.bus_write = BNO055_I2C_bus_write;
+//	myBNO.delay_msec = _delay;
+	BNO055_I2C_routine();
+
 
 	//Set the I2C address here !!! ADDR1 is the default address
 	//myBNO.dev_addr = BNO055_I2C_ADDR1;
