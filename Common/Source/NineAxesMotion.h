@@ -753,6 +753,7 @@ public:
 /******************** Bridge Functions for the Sensor API to control the Arduino Hardware******************************************/
 signed char BNO055_I2C_bus_read(unsigned char,unsigned char, unsigned char*, unsigned char);
 signed char BNO055_I2C_bus_write(unsigned char ,unsigned char , unsigned char* , unsigned char );
+void delay(int p) { ::vWait( p ); }
 void _delay(u32);
 
 #endif __NAXISMOTION_H__

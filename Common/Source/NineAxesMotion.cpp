@@ -52,26 +52,35 @@
 * patent rights of the copyright holder.
 */
 
+/*
+ * should include WProgram.h : because bring up error at the serial.h
+ */
+#if ARDUINO >= 100
+ #include "Arduino.h"
+#else
+ #include "WProgram.h"
+#endif
+
 //#include <math.h>
 
 #include <limits.h>
-//#include <stdint.h>
+#include <stdint.h>
 
 
-//#define SERIAL_DEBUG
-////#undef SERIAL_DEBUG
-//#ifdef SERIAL_DEBUG
-//
-//extern "C" {
-//
-//#include <serial.h>
-//#include <fprintf.h>
-//#include <suli.h>
-//extern tsFILE sDebugStream;
-//extern tsFILE sSerStream;
-//}
-//
-//#endif
+#define SERIAL_DEBUG
+//#undef SERIAL_DEBUG
+#ifdef SERIAL_DEBUG
+
+extern "C" {
+
+#include <serial.h>
+#include <fprintf.h>
+#include <suli.h>
+extern tsFILE sDebugStream;
+extern tsFILE sSerStream;
+}
+
+#endif
 
 
 #include "NineAxesMotion.h"
@@ -94,8 +103,8 @@ NineAxesMotion::NineAxesMotion()
 void NineAxesMotion::initSensor(unsigned int address)
 {
 	//Initialize the GPIO peripheral
-	pinMode(INT_PIN, INPUT_PULLUP);		//Configure Interrupt pin
-	pinMode(RESET_PIN, OUTPUT);			//Configure Reset pin
+//	pinMode(INT_PIN, INPUT_PULLUP);		//Configure Interrupt pin
+//	pinMode(RESET_PIN, OUTPUT);			//Configure Reset pin
 
 	//Power on the BNO055
 	resetSensor(address);
@@ -109,10 +118,10 @@ void NineAxesMotion::initSensor(unsigned int address)
 void NineAxesMotion::resetSensor(unsigned int address)
 {
 	//Reset sequence
-	digitalWrite(RESET_PIN, LOW);		//Set the Reset pin LOW
-	delay(RESET_PERIOD);				//Hold it for a while
-	digitalWrite(RESET_PIN, HIGH);		//Set the Reset pin HIGH
-	delay(INIT_PERIOD);					//Pause for a while to let the sensor initialize completely (Anything >500ms should be fine)
+//	digitalWrite(RESET_PIN, LOW);		//Set the Reset pin LOW
+//	delay(RESET_PERIOD);				//Hold it for a while
+//	digitalWrite(RESET_PIN, HIGH);		//Set the Reset pin HIGH
+//	delay(INIT_PERIOD);					//Pause for a while to let the sensor initialize completely (Anything >500ms should be fine)
 	//Initialization sequence
 	//Link the function pointers for communication (late-binding)
 	myBNO.bus_read = BNO055_I2C_bus_read;
@@ -988,33 +997,42 @@ uint8_t NineAxesMotion::readAccelPowerMode(void)
 signed char BNO055_I2C_bus_read(unsigned char dev_addr,unsigned char reg_addr, unsigned char *reg_data, unsigned char cnt)
 {
 	BNO055_RETURN_FUNCTION_TYPE comres = BNO055_ZERO_U8X;
-	I2C.beginTransmission(dev_addr);	//Start of transmission
-	I2C.write(reg_addr);				//Desired start register
-	comres = I2C.endTransmission();		//Stop of transmission
-	delayMicroseconds(150);				//Caution Delay
-	I2C.requestFrom(dev_addr, cnt);		//Request data
-	while(I2C.available())				//The slave device may send less than requested (burst read)
-	{
-		*reg_data = I2C.read();			//Receive a byte
-		reg_data++;						//Increment pointer
-	}
-	return comres;
+//	I2C.beginTransmission(dev_addr);	//Start of transmission
+//	I2C.write(reg_addr);				//Desired start register
+//	comres = I2C.endTransmission();		//Stop of transmission
+//	delayMicroseconds(150);				//Caution Delay
+//	I2C.requestFrom(dev_addr, cnt);		//Request data
+//	while(I2C.available())				//The slave device may send less than requested (burst read)
+//	{
+//		*reg_data = I2C.read();			//Receive a byte
+//		reg_data++;						//Increment pointer
+//	}
+//	return comres;
+
+
+	  uint8 dta_send[] = {reg_addr};
+
+
+	  ret = suli_i2c_write(NULL, dev_addr, dta_send, 1);
+	  ret = suli_i2c_read(NULL, dev_addr, reg_data, cnt);
+
+	  return comres;
 }
 
 
 signed char BNO055_I2C_bus_write(unsigned char dev_addr,unsigned char reg_addr, unsigned char *reg_data, unsigned char cnt)
 {
-	BNO055_RETURN_FUNCTION_TYPE comres = BNO055_ZERO_U8X;
-	I2C.beginTransmission(dev_addr);	//Start of transmission
-	I2C.write(reg_addr);				//Desired start register
-	for(unsigned char index = 0; index < cnt; index++) //Note that the BNO055 supports burst write
-	{
-		I2C.write(*reg_data);			//Write the data
-		reg_data++;						//Increment pointer
-	}
-	comres = I2C.endTransmission();		//Stop of transmission
-	delayMicroseconds(150);				//Caution Delay
-	return comres;
+//	BNO055_RETURN_FUNCTION_TYPE comres = BNO055_ZERO_U8X;
+//	I2C.beginTransmission(dev_addr);	//Start of transmission
+//	I2C.write(reg_addr);				//Desired start register
+//	for(unsigned char index = 0; index < cnt; index++) //Note that the BNO055 supports burst write
+//	{
+//		I2C.write(*reg_data);			//Write the data
+//		reg_data++;						//Increment pointer
+//	}
+//	comres = I2C.endTransmission();		//Stop of transmission
+//	delayMicroseconds(150);				//Caution Delay
+//	return comres;
 }
 
 void _delay(u32 period)
