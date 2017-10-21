@@ -52,7 +52,34 @@
 
 //#include "../../../Board.h"
 //#include "i2c_helper.h"
+
+
+#define BNO055_API
+#include "bno055.h"
 #include "bno055_support.h"
+
+#if ARDUINO >= 100
+ #include "Arduino.h"
+#else
+ #include "WProgram.h"
+#endif
+
+//#include <math.h>
+#include <limits.h>
+#define SERIAL_DEBUG
+//#undef SERIAL_DEBUG
+#ifdef SERIAL_DEBUG
+
+#include <serial.h>
+#include <fprintf.h>
+#include <suli.h>
+extern tsFILE sDebugStream;
+extern tsFILE sSerStream;
+
+#endif
+
+#define	BNO055_I2C_BUS_WRITE_ARRAY_INDEX	((u8)1)
+
 
 /*----------------------------------------------------------------------------*
  *  struct bno055_t parameters can be accessed by using BNO055
@@ -106,7 +133,7 @@ s32 imu_init() //function to be called before starting the imu task.
 		register - 0x3E
 		bit positions - 0 and 1*/
 		/* set the power mode as NORMAL*/
-		comres += bno055_set_power_mode(POWER_MODE_NORMAL);
+		comres += bno055_set_power_mode(BNO055_POWER_MODE_NORMAL);
 	/*--------------------------------------------------------------------------*
 	************************* END INITIALIZATION *************************
 	*---------------------------------------------------------------------------*/
@@ -135,7 +162,7 @@ s8 bno055_get_heading(double *d_euler_data_h, double *d_euler_data_p, double *d_
 		*0x0B - OPERATION_MODE_NDOF_FMC_OFF
 		*0x0C - OPERATION_MODE_NDOF
 		based on the user need configure the operation mode*/
-	comres = bno055_set_operation_mode(OPERATION_MODE_NDOF);
+	comres = bno055_set_operation_mode(BNO055_OPERATION_MODE_NDOF);
 	/*	API used to read Euler data output as double  - degree and radians
 		float functions also available in the BNO055 API */
 	comres += bno055_convert_double_euler_h_deg(d_euler_data_h);
@@ -145,7 +172,7 @@ s8 bno055_get_heading(double *d_euler_data_h, double *d_euler_data_p, double *d_
 	return comres;
 }
 
-s8 bno055_get_accel(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z)
+s8 bno055_get_accel(s16 *acc_x, s16 *acc_y, s16 *acc_z)
 {
 	/* Variable used to return value of
 	communication routine*/
@@ -546,126 +573,122 @@ unsigned char bno055_check_calibration_status()
 	my_bno055.bus_write = BNO055_I2C_bus_write;
 	my_bno055.bus_read = BNO055_I2C_bus_read;
 	my_bno055.delay_msec = BNO055_delay_msek;
-	my_bno055.dev_addr = Board_BNO055_MAINBOARD_I2CADDR; //TODO: integarte this in the API funcition in order to chose between weather strip and mainboard sensor.
+	my_bno055.dev_addr = BNO055_I2C_ADDR1; //TODO: integarte this in the API funcition in order to chose between weather strip and mainboard sensor.
 
-	return BNO055_ZERO_U8X;
+	//return BNO055_ZERO_U8X;
+	return 0;
 }
 
 /************** I2C buffer length******/
 
 #define	I2C_BUFFER_LEN 8
 #define I2C0 5
-/*-------------------------------------------------------------------*
-*
-*	This is a sample code for read and write the data by using I2C
-*	Use either I2C  based on your need
-*	The device address defined in the bno055.h file
-*
-*-----------------------------------------------------------------------*/
+ /*-------------------------------------------------------------------*
+ *
+ *	This is a sample code for read and write the data by using I2C
+ *	Use either I2C  based on your need
+ *	The device address defined in the bno055.h file
+ *
+ *--------------------------------------------------------------------*/
 
-/*	\Brief: The function is used as I2C bus write
- *	\Return : Status of the I2C write
- *	\param dev_addr : The device address of the sensor
- *	\param reg_addr : Address of the first register, will data is going to be written
- *	\param reg_data : It is a value hold in the array,
- *		will be used for write the value into the register
- *	\param cnt : The no of byte of data to be write
- */
-s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
-{
-	I2C_Transaction i2cTransaction;
+ /*	\Brief: The API is used as I2C bus write
+  *	\Return : Status of the I2C write
+  *	\param dev_addr : The device address of the sensor
+  *	\param reg_addr : Address of the first register,
+  *   will data is going to be written
+  *	\param reg_data : It is a value hold in the array,
+  *		will be used for write the value into the register
+  *	\param cnt : The no of byte of data to be write
+  */
+ s8 BNO055_I2C_bus_write(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
+ {
+ 	s32 BNO055_iERROR = BNO055_INIT_VALUE;
+ 	u8 array[I2C_BUFFER_LEN];
+ 	u8 stringpos = BNO055_INIT_VALUE;
+ 	bool ret;
 
-	s32 iError = BNO055_ZERO_U8X;
-	u8 writebuffer[I2C_BUFFER_LEN];
-	u8 stringpos = BNO055_ZERO_U8X;
-	writebuffer[BNO055_ZERO_U8X] = reg_addr;
-	for (stringpos = BNO055_ZERO_U8X; stringpos < cnt; stringpos++) {
-		writebuffer[stringpos + BNO055_ONE_U8X] = *(reg_data + stringpos);
-	}
-
-	i2cTransaction.readBuf = NULL;
-	i2cTransaction.readCount = 0;
-	i2cTransaction.writeBuf = writebuffer;
-	i2cTransaction.writeCount = cnt + 1;
-
-	i2cTransaction.slaveAddress = dev_addr; //Board_BNO055_MAINBOARD_I2CADDR;
-	int ret = I2C_transfer(i2c_helper_handle, &i2cTransaction);
-
-	if (!ret) {
-//		serial_printf(cli_stdout, "bme280 i2c bus write error\n", 0);
-		iError = ERROR;
-	}
-
-	/*
-	* Please take the below function as your reference for
-	* write the data using I2C communication
-	* "IERROR = I2C_WRITE_STRING(DEV_ADDR, ARRAY, CNT+1)"
-	* add your I2C write function here
-	* iError is an return value of I2C read function
-	* Please select your valid return value
-	* In the driver SUCCESS defined as 0
-    * and FAILURE defined as -1
-	* Note :
-	* This is a full duplex operation,
-	* The first read data is discarded, for that extra write operation
-	* have to be initiated. For that cnt+1 operation done in the I2C write string function
-	* For more information please refer data sheet SPI communication:
-	*/
-	return (s8)iError;
-}
-
- /*	\Brief: The function is used as I2C bus read
- *	\Return : Status of the I2C read
- *	\param dev_addr : The device address of the sensor
- *	\param reg_addr : Address of the first register, will data is going to be read
- *	\param reg_data : This data read from the sensor, which is hold in an array
- *	\param cnt : The no of byte of data to be read
- */
-s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
-{
-	I2C_Transaction i2cTransaction;
-
-	s32 iError = BNO055_ZERO_U8X;
-	u8 readBuffer[cnt];
-	u8 stringpos = BNO055_ZERO_U8X;
-	//array[BNO055_ZERO_U8X] = reg_addr;
-	/* Please take the below function as your reference
-	 * for read the data using I2C communication
-	 * add your I2C rad function here.
-	 * "IERROR = I2C_WRITE_READ_STRING(DEV_ADDR, ARRAY, ARRAY, 1, CNT)"
-	 * iError is an return value of SPI write function
-	 * Please select your valid return value
-     * In the driver SUCCESS defined as 0
+ 	array[BNO055_INIT_VALUE] = reg_addr;
+ 	for (stringpos = BNO055_INIT_VALUE; stringpos < cnt; stringpos++) {
+ 		array[stringpos + BNO055_I2C_BUS_WRITE_ARRAY_INDEX] =
+ 			*(reg_data + stringpos);
+ 	}
+ 	/*
+ 	* Please take the below APIs as your reference for
+ 	* write the data using I2C communication
+ 	* "BNO055_iERROR = I2C_WRITE_STRING(DEV_ADDR, ARRAY, CNT+1)"
+ 	* add your I2C write APIs here
+ 	* BNO055_iERROR is an return value of I2C read API
+ 	* Please select your valid return value
+ 	* In the driver BNO055_SUCCESS defined as 0
      * and FAILURE defined as -1
-	 */
-	i2cTransaction.writeBuf = &reg_addr;
-	i2cTransaction.writeCount = sizeof(reg_addr);
-
-	i2cTransaction.readBuf = &readBuffer;
-	i2cTransaction.readCount = sizeof(readBuffer);
-
-	i2cTransaction.slaveAddress = dev_addr;
-
-	int ret = I2C_transfer(i2c_helper_handle, &i2cTransaction);
-
-	if (!ret) {
-		serial_printf(cli_stdout, "bno055 read error \n", 0);
-		iError = ERROR;
-	}else{
-		iError = SUCCESS;
-	}
+ 	* Note :
+ 	* This is a full duplex operation,
+ 	* The first read data is discarded, for that extra write operation
+ 	* have to be initiated. For that cnt+1 operation done
+ 	* in the I2C write string function
+ 	* For more information please refer data sheet SPI communication:
+ 	*/
+ //	return (s8)BNO055_iERROR;
 
 
-	for (stringpos = BNO055_ZERO_U8X; stringpos < cnt; stringpos++) {
-		*(reg_data + stringpos) = readBuffer[stringpos];
-	}
-	return (s8)iError;
-}
-/*	Brief : The delay routine
- *	\param : delay in ms
-*/
-void BNO055_delay_msek(u32 msek)
-{
-	Task_sleep(msek);
-}
+ 	  ret = suli_i2c_write(NULL, (uint8)dev_addr, (uint8 *)array, cnt+1);
+ 	  //vfPrintf(&sSerStream, "\n\rwrite8 : (%02X %02X)", reg, value);
+
+ 	  return (s8)ret;
+ }
+
+  /*	\Brief: The API is used as I2C bus read
+  *	\Return : Status of the I2C read
+  *	\param dev_addr : The device address of the sensor
+  *	\param reg_addr : Address of the first register,
+  *  will data is going to be read
+  *	\param reg_data : This data read from the sensor,
+  *   which is hold in an array
+  *	\param cnt : The no of byte of data to be read
+  */
+ s8 BNO055_I2C_bus_read(u8 dev_addr, u8 reg_addr, u8 *reg_data, u8 cnt)
+ {
+ //	s32 BNO055_iERROR = BNO055_INIT_VALUE;
+ //	u8 array[I2C_BUFFER_LEN] = {BNO055_INIT_VALUE};
+ //	u8 stringpos = BNO055_INIT_VALUE;
+ //
+ //	array[BNO055_INIT_VALUE] = reg_addr;
+ //
+ //	/* Please take the below API as your reference
+ //	 * for read the data using I2C communication
+ //	 * add your I2C read API here.
+ //	 * "BNO055_iERROR = I2C_WRITE_READ_STRING(DEV_ADDR,
+ //	 * ARRAY, ARRAY, 1, CNT)"
+ //	 * BNO055_iERROR is an return value of SPI write API
+ //	 * Please select your valid return value
+ //     * In the driver BNO055_SUCCESS defined as 0
+ //     * and FAILURE defined as -1
+ //	 */
+ //	for (stringpos = BNO055_INIT_VALUE; stringpos < cnt; stringpos++)
+ //		*(reg_data + stringpos) = array[stringpos];
+ //	return (s8)BNO055_iERROR;
+
+
+
+
+
+ 	  bool ret = 0;
+ 	  uint8 dta_send[] = {reg_addr};
+
+
+ 	  ret = suli_i2c_write(NULL, dev_addr, dta_send, 1);
+ 	  ret = suli_i2c_read(NULL, dev_addr, reg_data, cnt);
+
+ 	  return (s8)ret;
+
+ }
+ /*	Brief : The delay routine
+  *	\param : delay in ms
+ */
+ void BNO055_delay_msek(u32 msek)
+ {
+ 	/*Here you can write your own delay routine*/
+ 	vWait(msek);
+ }
+
 

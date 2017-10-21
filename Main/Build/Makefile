@@ -52,7 +52,7 @@ APPSRC += SMBus.c
 #APPSRC += Adafruit_BNO055.cpp
 #APPSRC += rawdata.cpp
 APPSRC += bno055.c
-APPSRC += bno055_support.c
+APPSRC += bno055_support2.c
 APPSRC += Euler.c
 
 ### Target type

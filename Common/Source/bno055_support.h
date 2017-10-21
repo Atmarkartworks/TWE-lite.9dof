@@ -59,9 +59,11 @@
 *---------------------------------------------------------------------------*/
 #include "bno055.h"
 
+#define ERROR	-1
+
 s32 imu_init();
 s8 bno055_get_heading(double *d_euler_data_h, double *d_euler_data_p, double *d_euler_data_r);
-s8 bno055_get_accel(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z);
+s8 bno055_get_accel(s16 *acc_x, s16 *acc_y, s16 *acc_z);
 
 unsigned char bno055_check_calibration_status();
 
