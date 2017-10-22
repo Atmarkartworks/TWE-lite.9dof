@@ -3833,6 +3833,14 @@ struct bno055_euler_t *euler_hpr)
 		if (com_rslt == BNO055_SUCCESS) {
 			/* Read Euler raw hrp data*/
 			com_rslt += bno055_read_euler_hrp(&reg_euler);
+
+
+			/*
+			 * for Debug
+			 */
+			vfPrintf(&sSerStream, "\n\rbno055_convert_euler_hpr_deg : %04x %04x %04x ", reg_euler.h, reg_euler.p, reg_euler.r);
+
+
 			if (com_rslt == BNO055_SUCCESS) {
 				/* Convert raw Euler hrp to degree*/
 				euler_hpr->h =
