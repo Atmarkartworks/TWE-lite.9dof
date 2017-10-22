@@ -167,6 +167,8 @@ void cbAppColdStart(bool_t bAfterAhiInit)
 		// MAC start
 		ToCoNet_vMacStart();
 
+		vPortAsInput(12);
+
 		setup();
 	}
 }
