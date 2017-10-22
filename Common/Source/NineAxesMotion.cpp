@@ -1059,7 +1059,7 @@ void _delay(u32 period)
 }
 
 
-void NineAxesMotion::begin(unsigned int address = 0x28)
+void NineAxesMotion::begin(unsigned int address)
 {
 	initSensor(address);
 }
