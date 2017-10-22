@@ -137,7 +137,7 @@ void NineAxesMotion::resetSensor(unsigned int address)
 	bno055_init(&myBNO);
 
 	//Post initialization delay
-	delay(POST_INIT_PERIOD);
+	_delay(POST_INIT_PERIOD);
 
 	//To set the output data format to the Android style
 	bno055_set_data_output_format(ANDROID);
@@ -1053,9 +1053,11 @@ signed char BNO055_I2C_bus_write(unsigned char dev_addr,unsigned char reg_addr, 
 
 }
 
+// 1ms : 2000
 void _delay(u32 period)
 {
-	delay(period);
+	//delay(period);
+	::vWait( period * 2000 );
 }
 
 

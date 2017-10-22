@@ -522,9 +522,9 @@ static void vHandleSerialInput(void)
 			  uint8_t system, gyro, accel, mag = 0;
 
 			  vfPrintf(&sSerStream, LB "Start BNO055 sensing...");
-			  action(&system, &gyro, &accel, &mag);
-				vfPrintf(&sSerStream, "\n\r%0x %0x %0x %0x", system, gyro, accel, mag);
-
+			  //action(&system, &gyro, &accel, &mag);
+				//vfPrintf(&sSerStream, "\n\r%0x %0x %0x %0x", system, gyro, accel, mag);
+			  action();
 
 
 //			if (!u8KickedSensor) {
@@ -566,7 +566,7 @@ static void vHandleSerialInput(void)
 //					vfPrintf(&sSerStream, LB "SHT21 is not found.");
 //				}
 //			}
-			init();
+			//init();
 			break;
 
 		case 'e': // 24AA00

@@ -76,7 +76,7 @@ extern tsFILE sSerStream;
 
 #include "NineAxesMotion.h"        //Contains the bridge code between the API and the Arduino Environment
 //#include <Wire.h>
-
+#include "Euler.h"
 
 NineAxesMotion mySensor;         //Object that for the sensor
 unsigned long lastStreamTime = 0;     //To store the last streamed time stamp
@@ -126,6 +126,6 @@ void action() //This code is looped forever
 
     vfPrintf(&sSerStream, "\n\r H:%0x deg  R:%0x deg  P:%0x deg", h, r, p);
     vfPrintf(&sSerStream, "\n\r A:%0x M:%0x G:%0x S:%0x", ac, mc, gc, sc);
-    delay(300);
+    _delay(300);
 //  }
 }
