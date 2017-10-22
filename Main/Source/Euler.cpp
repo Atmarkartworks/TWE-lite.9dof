@@ -44,6 +44,35 @@
 * patent rights of the copyright holder.
 */
 
+/*
+ * should include WProgram.h : because bring up error at the serial.h
+ */
+#if ARDUINO >= 100
+ #include "Arduino.h"
+#else
+ #include "WProgram.h"
+#endif
+
+//#include <math.h>
+
+#include <limits.h>
+#include <stdint.h>
+
+
+#define SERIAL_DEBUG
+//#undef SERIAL_DEBUG
+#ifdef SERIAL_DEBUG
+
+extern "C" {
+
+#include <serial.h>
+#include <fprintf.h>
+#include <suli.h>
+extern tsFILE sDebugStream;
+extern tsFILE sSerStream;
+}
+
+#endif
 
 #include "NineAxesMotion.h"        //Contains the bridge code between the API and the Arduino Environment
 //#include <Wire.h>
@@ -56,51 +85,47 @@ const int streamPeriod = 20;          //To stream at 50Hz without using addition
 void setup() //This code is executed once
 {
   //Peripheral Initialization
-  Serial.begin(115200);           //Initialize the Serial Port to view information on the Serial Monitor
-  I2C.begin();                    //Initialize I2C communication to the let the library communicate with the sensor.
+//  Serial.begin(115200);           //Initialize the Serial Port to view information on the Serial Monitor
+//  I2C.begin();                    //Initialize I2C communication to the let the library communicate with the sensor.
+
+  suli_i2c_init(NULL);
+
+
   //Sensor Initialization
   mySensor.initSensor();          //The I2C Address can be changed here inside this function in the library
-  mySensor.setOperationMode(OPERATION_MODE_NDOF);   //Can be configured to other operation modes as desired
+  mySensor.setOperationMode(BNO055_OPERATION_MODE_NDOF);   //Can be configured to other operation modes as desired
   mySensor.setUpdateMode(MANUAL);	//The default is AUTO. Changing to MANUAL requires calling the relevant update functions prior to calling the read functions
   //Setting to MANUAL requires fewer reads to the sensor
+
+
+
 }
 
-void loop() //This code is looped forever
+void action() //This code is looped forever
 {
-  if ((millis() - lastStreamTime) >= streamPeriod)
-  {
-    lastStreamTime = millis();
+//  if ((millis() - lastStreamTime) >= streamPeriod)
+//  {
+//    lastStreamTime = millis();
     mySensor.updateEuler();        //Update the Euler data into the structure of the object
     mySensor.updateCalibStatus();  //Update the Calibration Status
 
-    Serial.print("Time: ");
-    Serial.print(lastStreamTime);
-    Serial.print("ms ");
+//    Serial.print("Time: ");
+//    Serial.print(lastStreamTime);
+//    Serial.print("ms ");
 
-    Serial.print(" H: ");
-    Serial.print(mySensor.readEulerHeading()); //Heading data
-    Serial.print("deg ");
 
-    Serial.print(" R: ");
-    Serial.print(mySensor.readEulerRoll()); //Roll data
-    Serial.print("deg");
+    u16 h = (u16)mySensor.readEulerHeading(); //Heading data
+    u16 r = (u16)mySensor.readEulerRoll(); //Roll data
+    u16 p = (u16)mySensor.readEulerPitch(); //Pitch data
+    u16 ac = mySensor.readAccelCalibStatus();  //Accelerometer Calibration Status (0 - 3)
+    u16 mc = mySensor.readMagCalibStatus();    //Magnetometer Calibration Status (0 - 3)
+    u16 gc = mySensor.readGyroCalibStatus();   //Gyroscope Calibration Status (0 - 3)
+    u16 sc = mySensor.readSystemCalibStatus();   //System Calibration Status (0 - 3)
 
-    Serial.print(" P: ");
-    Serial.print(mySensor.readEulerPitch()); //Pitch data
-    Serial.print("deg ");
 
-    Serial.print(" A: ");
-    Serial.print(mySensor.readAccelCalibStatus());  //Accelerometer Calibration Status (0 - 3)
 
-    Serial.print(" M: ");
-    Serial.print(mySensor.readMagCalibStatus());    //Magnetometer Calibration Status (0 - 3)
-
-    Serial.print(" G: ");
-    Serial.print(mySensor.readGyroCalibStatus());   //Gyroscope Calibration Status (0 - 3)
-
-    Serial.print(" S: ");
-    Serial.print(mySensor.readSystemCalibStatus());   //System Calibration Status (0 - 3)
-
-    Serial.println();
-  }
+    vfPrintf(&sSerStream, "\n\r H:%0x deg  R:%0x deg  P:%0x deg", h, r, p);
+    vfPrintf(&sSerStream, "\n\r A:%0x M:%0x G:%0x S:%0x", ac, mc, gc, sc);
+    delay(300);
+//  }
 }
