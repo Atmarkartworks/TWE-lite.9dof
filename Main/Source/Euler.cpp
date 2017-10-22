@@ -111,7 +111,7 @@ void action() //This code is looped forever
 //  if ((millis() - lastStreamTime) >= streamPeriod)
 //  {
 //    lastStreamTime = millis();
-    mySensor.updateEuler();        //Update the Euler data into the structure of the object
+    mySensor.updateEuler2();        //Update the Euler data into the structure of the object
     mySensor.updateCalibStatus();  //Update the Calibration Status
 
 //    Serial.print("Time: ");
@@ -119,9 +119,16 @@ void action() //This code is looped forever
 //    Serial.print("ms ");
 
 
-    u16 h = (u16)mySensor.readEulerHeading(); //Heading data
-    u16 r = (u16)mySensor.readEulerRoll(); //Roll data
-    u16 p = (u16)mySensor.readEulerPitch(); //Pitch data
+//    u16 h = (u16)mySensor.readEulerHeading(); //Heading data
+//    u16 r = (u16)mySensor.readEulerRoll(); //Roll data
+//    u16 p = (u16)mySensor.readEulerPitch(); //Pitch data
+
+    s16 h = mySensor.readEulerHeading2(); //Heading data
+    s16 r = mySensor.readEulerRoll2(); //Roll data
+    s16 p = mySensor.readEulerPitch2(); //Pitch data
+
+
+
     u16 ac = mySensor.readAccelCalibStatus();  //Accelerometer Calibration Status (0 - 3)
     u16 mc = mySensor.readMagCalibStatus();    //Magnetometer Calibration Status (0 - 3)
     u16 gc = mySensor.readGyroCalibStatus();   //Gyroscope Calibration Status (0 - 3)

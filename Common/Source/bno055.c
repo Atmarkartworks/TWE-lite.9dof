@@ -56,6 +56,28 @@
 /*********************************************************/
 /*				INCLUDES	*/
 /*******************************************************/
+
+#if ARDUINO >= 100
+ #include "Arduino.h"
+#else
+ #include "WProgram.h"
+#endif
+
+//#include <math.h>
+#include <limits.h>
+#define SERIAL_DEBUG
+//#undef SERIAL_DEBUG
+#ifdef SERIAL_DEBUG
+
+#include <serial.h>
+#include <fprintf.h>
+#include <suli.h>
+extern tsFILE sDebugStream;
+extern tsFILE sSerStream;
+
+#endif
+
+
 #include "bno055.h"
 /*! file <BNO055 >
     brief <Sensor driver for BNO055> */
@@ -1625,6 +1647,16 @@ struct bno055_euler_t *euler)
 			(p_bno055->dev_addr,
 			BNO055_EULER_H_LSB_VALUEH_REG,
 			data_u8, BNO055_EULER_HRP_DATA_SIZE);
+
+
+
+			/*
+			 * for debug
+			 */
+			vfPrintf(&sSerStream, "\n\rbno055_read_euler_hrp : %02x %02x %02x %02x %02x %02x",
+					data_u8[0],data_u8[1],data_u8[2],data_u8[3],data_u8[4],data_u8[5]);
+
+
 			/* Data h*/
 			data_u8[BNO055_SENSOR_DATA_EULER_HRP_H_LSB] =
 			BNO055_GET_BITSLICE(
@@ -3768,6 +3800,47 @@ struct bno055_euler_float_t *euler_hpr)
 				(float)(reg_euler.p/BNO055_EULER_DIV_DEG);
 				euler_hpr->r =
 				(float)(reg_euler.r/BNO055_EULER_DIV_DEG);
+			} else {
+			com_rslt = BNO055_ERROR;
+			}
+		} else {
+		com_rslt = BNO055_ERROR;
+		}
+	return com_rslt;
+}
+
+/*
+ * retrieve data at the Euler.cpp
+ */
+
+BNO055_RETURN_FUNCTION_TYPE bno055_convert_euler_hpr_deg(
+struct bno055_euler_t *euler_hpr)
+{
+	/* Variable used to return value of
+	communication routine*/
+	BNO055_RETURN_FUNCTION_TYPE com_rslt = BNO055_ERROR;
+
+	struct bno055_euler_t reg_euler = {BNO055_INIT_VALUE, BNO055_INIT_VALUE, BNO055_INIT_VALUE};
+
+	u8 euler_unit_u8 = BNO055_INIT_VALUE;
+
+	/* Read the current Euler unit and set the
+	unit as degree if the unit is in radians */
+	com_rslt = bno055_get_euler_unit(&euler_unit_u8);
+
+	if (euler_unit_u8 != BNO055_EULER_UNIT_DEG)
+		com_rslt += bno055_set_euler_unit(BNO055_EULER_UNIT_DEG);
+		if (com_rslt == BNO055_SUCCESS) {
+			/* Read Euler raw hrp data*/
+			com_rslt += bno055_read_euler_hrp(&reg_euler);
+			if (com_rslt == BNO055_SUCCESS) {
+				/* Convert raw Euler hrp to degree*/
+				euler_hpr->h =
+				(s16)(reg_euler.h); // /BNO055_EULER_DIV_DEG);
+				euler_hpr->p =
+				(s16)(reg_euler.p); // /BNO055_EULER_DIV_DEG);
+				euler_hpr->r =
+				(s16)(reg_euler.r); // /BNO055_EULER_DIV_DEG);
 			} else {
 			com_rslt = BNO055_ERROR;
 			}

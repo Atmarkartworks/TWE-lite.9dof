@@ -137,6 +137,8 @@ private:
 	struct 	bno055_gravity_float_t	gravAccelData;			//Structure that holds the gravity acceleration data
 	struct 	bno055_calib_stat_t	calibStatus;			//Structure to hold the calibration status
 	struct 	bno055_accel_stat_t	accelStatus;			//Structure to hold the status of the accelerometer configurations
+
+	struct	bno055_euler_t		eulerData2;
 public:
 	//Function Declarations
 	/*******************************************************************************************
@@ -241,6 +243,7 @@ public:
 	*Return Parameter: None
 	*******************************************************************************************/
 	void updateEuler(void);
+	void updateEuler2(void);
 
 	/*******************************************************************************************
 	*Description: This function is used to update the linear acceleration data in m/s2
@@ -557,6 +560,7 @@ public:
 	*	float:	Heading of the euler data
 	*******************************************************************************************/
 	float readEulerHeading(void);
+	s16 readEulerHeading2(void);
 
 	/*******************************************************************************************
 	*Description: This function is used to return the roll of the euler data
@@ -565,6 +569,7 @@ public:
 	*	float:	Roll of the euler data
 	*******************************************************************************************/
 	float readEulerRoll(void);
+	s16 readEulerRoll2(void);
 
 	/*******************************************************************************************
 	*Description: This function is used to return the pitch of the euler data
@@ -573,6 +578,7 @@ public:
 	*	float:	Pitch of the euler data
 	*******************************************************************************************/
 	float readEulerPitch(void);
+	s16 readEulerPitch2(void);
 
 	/*******************************************************************************************
 	*Description: This function is used to return the x-axis of the linear acceleration data

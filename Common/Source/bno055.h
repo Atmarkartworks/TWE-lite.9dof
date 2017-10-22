@@ -7971,4 +7971,16 @@ u8 *gyro_awake_durn_u8);
  */
 BNO055_RETURN_FUNCTION_TYPE bno055_set_gyro_any_motion_awake_durn(
 u8 gyro_awake_durn_u8);
+
+
+/*
+ * ---------------------------------------------------------------------
+ * 	@Add 2017-Oct-22
+ *
+ */
+BNO055_RETURN_FUNCTION_TYPE bno055_convert_euler_hpr_deg(
+struct bno055_euler_t *euler_hpr);
+
+
+
 #endif

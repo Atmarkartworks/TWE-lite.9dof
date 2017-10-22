@@ -176,11 +176,11 @@ bool NineAxesMotion::init()
 
   /* Make sure we have the right device */
   BNO055_I2C_bus_read(0x28, 0x00, &data, 1);
-  if(data != 0x0a)
+  if(data != 0xa0)
   {
     _delay(100); // hold on for boot
     BNO055_I2C_bus_read(0x28, 0x00, &data, 1);
-    if(data != 0x0a) {
+    if(data != 0xa0) {
       return false;  // still not? ok bail
     }
   }
@@ -295,7 +295,22 @@ void NineAxesMotion::updateEuler(void)
 	BNO055_RETURN_FUNCTION_TYPE comRes = BNO055_ZERO_U8X;		//Holds the communication results
 	comRes = bno055_convert_float_euler_hpr_deg(&eulerData);	//Read the data from the sensor
 }
+void NineAxesMotion::updateEuler2(void)
+{
+	BNO055_RETURN_FUNCTION_TYPE comRes = BNO055_ZERO_U8X;		//Holds the communication results
+	//comRes = bno055_convert_float_euler_hpr_deg(&eulerData);	//Read the data from the sensor
 
+
+	comRes = bno055_convert_euler_hpr_deg(&eulerData2);
+
+	//struct bno055_euler_t *euler_hpr);
+	//bno055_read_euler_h
+	//bno055_euler_t
+
+
+	//bno055_get_euler_unit
+
+}
 
 /*******************************************************************************************
 *Description: This function is used to update the linear acceleration data in m/s2
@@ -774,7 +789,14 @@ float NineAxesMotion::readEulerHeading(void)
 	}
 	return eulerData.h;
 }
-
+s16 NineAxesMotion::readEulerHeading2(void)
+{
+	if (dataUpdateMode == AUTO)
+	{
+		updateEuler2();
+	}
+	return eulerData2.h;
+}
 /*******************************************************************************************
 *Description: This function is used to return the roll of the euler data
 *Input Parameters: None
@@ -788,6 +810,14 @@ float NineAxesMotion::readEulerRoll(void)
 		updateEuler();
 	}
 	return eulerData.r;
+}
+s16 NineAxesMotion::readEulerRoll2(void)
+{
+	if (dataUpdateMode == AUTO)
+	{
+		updateEuler2();
+	}
+	return eulerData2.r;
 }
 
 /*******************************************************************************************
@@ -803,6 +833,14 @@ float NineAxesMotion::readEulerPitch(void)
 		updateEuler();
 	}
 	return eulerData.p;
+}
+s16 NineAxesMotion::readEulerPitch2(void)
+{
+	if (dataUpdateMode == AUTO)
+	{
+		updateEuler2();
+	}
+	return eulerData2.p;
 }
 
 /*******************************************************************************************
@@ -1055,9 +1093,13 @@ signed char BNO055_I2C_bus_read(unsigned char dev_addr,unsigned char reg_addr, u
 
 
 	  comres = suli_i2c_write(NULL, dev_addr, dta_send, 1);
+	  vfPrintf(&sSerStream, "\n\rBNO055_I2C_bus_read : REG: %02x cnt:%d Data: ", dta_send[0], cnt);
+
 	  comres = suli_i2c_read(NULL, dev_addr, reg_data, cnt);
 
-	  vfPrintf(&sSerStream, "\n\rBNO055_I2C_bus_read : %02x ... ", reg_data[0]);
+	  for (int i = 0; i < cnt; i++)
+		  vfPrintf(&sSerStream, "%02x ", reg_data[i]);
+
 	  return reg_data[0];
 }
 
@@ -1080,6 +1122,7 @@ signed char BNO055_I2C_bus_write(unsigned char dev_addr,unsigned char reg_addr, 
  	u8 array[8];
  	u8 stringpos = BNO055_INIT_VALUE;
  	bool ret;
+ 	for (int i = 0; i < 8; i++) array[i] = 0;
 
  	array[BNO055_INIT_VALUE] = reg_addr;
  	for (stringpos = BNO055_INIT_VALUE; stringpos < cnt; stringpos++) {
