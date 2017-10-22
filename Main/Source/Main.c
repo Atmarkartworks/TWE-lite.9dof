@@ -34,6 +34,8 @@
 //#include "BH1715.h"
 //#include "SHT21.h"
 
+//#include "common.h"
+#include "config.h"
 
 #include "Euler.h"
 
@@ -600,6 +602,10 @@ static void vHandleSerialInput(void)
 //
 //				u32ct++;
 //			}
+
+			/* 4番ピンを読み取る */
+			//bool pin4isHigh = ( ( u32AHI_DioReadInput() & 0x10 ) >> 4) ? true : false;
+			vfPrintf(&sSerStream, "\n\rbPortRead 12 : (%d):", bPortRead(12));
 			break;
 
 		case '>': case '.':
