@@ -1100,7 +1100,8 @@ signed char BNO055_I2C_bus_read(unsigned char dev_addr,unsigned char reg_addr, u
 	  for (int i = 0; i < cnt; i++)
 		  vfPrintf(&sSerStream, "%02x ", reg_data[i]);
 
-	  return reg_data[0];
+	  //return reg_data[0];
+	  return BNO055_SUCCESS;
 }
 
 #define	BNO055_I2C_BUS_WRITE_ARRAY_INDEX	((u8)1)
@@ -1133,7 +1134,8 @@ signed char BNO055_I2C_bus_write(unsigned char dev_addr,unsigned char reg_addr, 
 	comres = suli_i2c_write(NULL, (uint8)dev_addr, (uint8 *)array, cnt+1);
 	vfPrintf(&sSerStream, "%0x", comres);
 
-	  return comres;
+	  //return comres;
+	  return BNO055_SUCCESS;
 
 
 }

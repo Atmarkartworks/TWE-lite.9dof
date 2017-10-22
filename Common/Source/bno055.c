@@ -3828,20 +3828,28 @@ struct bno055_euler_t *euler_hpr)
 	unit as degree if the unit is in radians */
 	com_rslt = bno055_get_euler_unit(&euler_unit_u8);
 
+	vfPrintf(&sSerStream, "\n\rbno055_convert_euler_hpr_deg : read out com_rslt %d ", com_rslt);
+
 	if (euler_unit_u8 != BNO055_EULER_UNIT_DEG)
 		com_rslt += bno055_set_euler_unit(BNO055_EULER_UNIT_DEG);
+		vfPrintf(&sSerStream, "\n\rbno055_convert_euler_hpr_deg : read out com_rslt %d ", com_rslt);
+
 		if (com_rslt == BNO055_SUCCESS) {
 			/* Read Euler raw hrp data*/
 			com_rslt += bno055_read_euler_hrp(&reg_euler);
 
-
-			/*
-			 * for Debug
-			 */
-			vfPrintf(&sSerStream, "\n\rbno055_convert_euler_hpr_deg : %04x %04x %04x ", reg_euler.h, reg_euler.p, reg_euler.r);
-
+			vfPrintf(&sSerStream, "\n\rbno055_convert_euler_hpr_deg : read out com_rslt %d ", com_rslt);
 
 			if (com_rslt == BNO055_SUCCESS) {
+
+				/*
+				 * for Debug
+				 */
+				vfPrintf(&sSerStream, "\n\rbno055_convert_euler_hpr_deg : %d %d %d ", reg_euler.h, reg_euler.p, reg_euler.r);
+
+
+
+
 				/* Convert raw Euler hrp to degree*/
 				euler_hpr->h =
 				(s16)(reg_euler.h); // /BNO055_EULER_DIV_DEG);

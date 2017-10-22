@@ -136,7 +136,7 @@ void action() //This code is looped forever
 
 
 
-    vfPrintf(&sSerStream, "\n\r H:%0x deg  R:%0x deg  P:%0x deg", h, r, p);
+    vfPrintf(&sSerStream, "\n\r H:%d deg  R:%d deg  P:%d deg", h, r, p);
     vfPrintf(&sSerStream, "\n\r A:%0x M:%0x G:%0x S:%0x", ac, mc, gc, sc);
     _delay(300);
 //  }
