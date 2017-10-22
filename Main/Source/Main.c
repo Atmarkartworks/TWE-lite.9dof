@@ -566,7 +566,7 @@ static void vHandleSerialInput(void)
 //					vfPrintf(&sSerStream, LB "SHT21 is not found.");
 //				}
 //			}
-			//init();
+			init();
 			break;
 
 		case 'e': // 24AA00

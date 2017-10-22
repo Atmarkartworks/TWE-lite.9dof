@@ -146,6 +146,47 @@ void NineAxesMotion::resetSensor(unsigned int address)
 	dataUpdateMode = AUTO;
 }
 
+bool NineAxesMotion::init()
+{
+	unsigned char data;
+
+	vfPrintf(&sSerStream, "\n\rinit() ...");
+
+	data = 0x00;
+	BNO055_I2C_bus_write(0x28, 0x3d, &data, 1);
+	_delay(100);
+	data = 0x81;
+	BNO055_I2C_bus_write(0x28, 0x3f, &data, 1);
+	_delay(100);
+	data = 0x21;
+	BNO055_I2C_bus_write(0x28, 0x41, &data, 1);
+	_delay(100);
+	data = 0x02;
+	BNO055_I2C_bus_write(0x28, 0x42, &data, 1);
+	_delay(100);
+	data = 0x00;
+	BNO055_I2C_bus_write(0x28, 0x3b, &data, 1);
+	_delay(100);
+	data = 0x0c;
+	BNO055_I2C_bus_write(0x28, 0x3d, &data, 1);;
+	_delay(100);
+
+
+
+
+  /* Make sure we have the right device */
+  BNO055_I2C_bus_read(0x28, 0x00, &data, 1);
+  if(data != 0x0a)
+  {
+    _delay(100); // hold on for boot
+    BNO055_I2C_bus_read(0x28, 0x00, &data, 1);
+    if(data != 0x0a) {
+      return false;  // still not? ok bail
+    }
+  }
+
+  return true;
+}
 /*******************************************************************************************
 *Description: This function is used to set the operation mode of the BNO055
 *Input Parameters:
@@ -1016,7 +1057,8 @@ signed char BNO055_I2C_bus_read(unsigned char dev_addr,unsigned char reg_addr, u
 	  comres = suli_i2c_write(NULL, dev_addr, dta_send, 1);
 	  comres = suli_i2c_read(NULL, dev_addr, reg_data, cnt);
 
-	  return comres;
+	  vfPrintf(&sSerStream, "\n\rBNO055_I2C_bus_read : %02x ... ", reg_data[0]);
+	  return reg_data[0];
 }
 
 #define	BNO055_I2C_BUS_WRITE_ARRAY_INDEX	((u8)1)
@@ -1044,9 +1086,9 @@ signed char BNO055_I2C_bus_write(unsigned char dev_addr,unsigned char reg_addr, 
  		array[stringpos + BNO055_I2C_BUS_WRITE_ARRAY_INDEX] =
  			*(reg_data + stringpos);
  	}
-
-	  comres = suli_i2c_write(NULL, (uint8)dev_addr, (uint8 *)array, cnt+1);
-	  //vfPrintf(&sSerStream, "\n\rwrite8 : (%02X %02X)", reg, value);
+ 	vfPrintf(&sSerStream, "\n\rBNO055_I2C_bus_write : (%02X %02X %02X) %d ... ", array[0], array[1], array[2], cnt+1);
+	comres = suli_i2c_write(NULL, (uint8)dev_addr, (uint8 *)array, cnt+1);
+	vfPrintf(&sSerStream, "%0x", comres);
 
 	  return comres;
 

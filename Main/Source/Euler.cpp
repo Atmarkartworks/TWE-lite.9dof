@@ -101,6 +101,11 @@ void setup() //This code is executed once
 
 }
 
+void init(void)
+{
+if(mySensor.init()) vfPrintf(&sSerStream, "\n\rinit ... ok");
+}
+
 void action() //This code is looped forever
 {
 //  if ((millis() - lastStreamTime) >= streamPeriod)

@@ -16,7 +16,7 @@ extern "C" {
 
 
 void setup();
-//void init(void);
+void init();
 //void action(uint8_t* s,uint8_t* g, uint8_t* a, uint8_t* m);
 void action();
 

@@ -145,6 +145,7 @@ public:
 	*Return Parameter: None
 	*******************************************************************************************/
 	NineAxesMotion();
+	bool init();
 
 	/*******************************************************************************************
 	*Description: Function with the bare minimum initialization
