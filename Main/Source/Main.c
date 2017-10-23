@@ -168,6 +168,7 @@ void cbAppColdStart(bool_t bAfterAhiInit)
 		ToCoNet_vMacStart();
 
 		vPortAsInput(12);
+		vAHI_DioSetPullup(1UL << 12, 1UL << 12);
 
 		setup();
 	}
