@@ -167,8 +167,8 @@ void cbAppColdStart(bool_t bAfterAhiInit)
 		// MAC start
 		ToCoNet_vMacStart();
 
-		vPortAsInput(12);
-		vAHI_DioSetPullup(1UL << 12, 1UL << 12);
+		//vPortAsInput(12);
+		//vAHI_DioSetPullup(1UL << 12, 1UL << 12);
 
 		setup();
 	}
@@ -606,9 +606,15 @@ static void vHandleSerialInput(void)
 //				u32ct++;
 //			}
 
-			/* 4番ピンを読み取る */
-			//bool pin4isHigh = ( ( u32AHI_DioReadInput() & 0x10 ) >> 4) ? true : false;
-			vfPrintf(&sSerStream, "\n\rbPortRead 12 : (%d):", bPortRead(12));
+			_C {
+
+				/* 4番ピンを読み取る */
+				//bool pin4isHigh = ( ( u32AHI_DioReadInput() & 0x10 ) >> 4) ? true : false;
+				uint8 ret = bPortRead(12);
+				uint32 bit = u32PortReadBitmap();
+				vfPrintf(&sSerStream, "\n\rbPortRead 12 : (%d): %04x", ret, bit);
+				//vfPrintf(&sSerStream, "\n\rbPortRead 12 : (%d):", bPortRead(PORT_INPUT1));
+				}
 			break;
 
 		case '>': case '.':
